@@ -1,0 +1,427 @@
+
+<style>
+  #rpg{font-family:var(--font-mono);padding:1rem 0;color:var(--color-text-primary)}
+  #log{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:1rem;height:200px;overflow-y:auto;font-size:13px;line-height:1.8;margin-bottom:.75rem}
+  .log-line{margin:0}
+  .em{color:#185FA5;font-weight:500}
+  .dmg{color:#A32D2D}
+  .ok{color:#3B6D11}
+  .muted{color:var(--color-text-secondary)}
+  .boss-line{color:#854F0B;font-weight:500}
+  .ability-line{color:#534AB7;font-weight:500}
+  #stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:.75rem}
+  .stat{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:6px 8px;text-align:center}
+  .stat-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:2px}
+  .stat-value{font-size:15px;font-weight:500}
+  .bar{height:5px;border-radius:3px;background:var(--color-border-tertiary);margin-top:3px;overflow:hidden}
+  .bar-fill{height:100%;transition:width .4s;border-radius:3px}
+  #enemy-block{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:.75rem;font-size:13px;display:none}
+  .boss-block{border-color:#BA7517!important}
+  #enemy-name{font-weight:500;margin-bottom:4px}
+  #enemy-bar-wrap{height:6px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden}
+  #enemy-bar{height:100%;background:#A32D2D;transition:width .4s;border-radius:3px}
+  #actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  #abilities-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:7px}
+  button{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:9px 12px;font-size:12px;cursor:pointer;color:var(--color-text-primary);font-family:var(--font-mono);text-align:left;transition:background .15s}
+  button:hover{background:var(--color-background-secondary)}
+  button:disabled{opacity:.35;cursor:default}
+  .btn-ability{border-color:#AFA9EC;color:#3C3489}
+  .btn-boss{border-color:#EF9F27}
+  #location-tag{font-size:11px;color:var(--color-text-secondary);margin-bottom:.6rem;letter-spacing:.05em;text-transform:uppercase}
+  .cd-badge{font-size:10px;color:var(--color-text-secondary);margin-left:4px}
+  #xp-row{display:flex;align-items:center;gap:8px;margin-bottom:.75rem}
+  #xp-label{font-size:11px;color:var(--color-text-secondary);white-space:nowrap}
+  #xp-bar-wrap{flex:1;height:4px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
+  #xp-bar{height:100%;background:#534AB7;transition:width .4s;border-radius:2px}
+  #xp-text{font-size:11px;color:var(--color-text-secondary);white-space:nowrap}
+  #debuffs{font-size:11px;color:#A32D2D;min-height:14px;margin-bottom:4px}
+</style>
+
+<div id="rpg">
+<h2 class="sr-only">RPG adventure game — hard mode</h2>
+<div id="location-tag">The Verdant Crossroads</div>
+<div id="log"></div>
+<div id="debuffs"></div>
+<div id="stats">
+  <div class="stat"><div class="stat-label">HP</div><div class="stat-value" id="s-hp">—</div><div class="bar"><div class="bar-fill" id="hp-bar" style="width:100%;background:#3B6D11"></div></div></div>
+  <div class="stat"><div class="stat-label">ATK</div><div class="stat-value" id="s-atk">—</div></div>
+  <div class="stat"><div class="stat-label">DEF</div><div class="stat-value" id="s-def">—</div></div>
+  <div class="stat"><div class="stat-label">Gold</div><div class="stat-value" id="s-gold">—</div></div>
+  <div class="stat"><div class="stat-label">Lvl</div><div class="stat-value" id="s-level">—</div></div>
+</div>
+<div id="xp-row"><span id="xp-label">XP</span><div id="xp-bar-wrap"><div id="xp-bar" style="width:0%"></div></div><span id="xp-text">0/40</span></div>
+<div id="enemy-block">
+  <div id="enemy-name">Enemy</div>
+  <div id="enemy-bar-wrap"><div id="enemy-bar" style="width:100%"></div></div>
+  <div id="enemy-hp-text" style="font-size:11px;color:var(--color-text-secondary);margin-top:3px"></div>
+</div>
+<div id="abilities-row" style="display:none"></div>
+<div id="actions"></div>
+</div>
+
+<script>
+const S={
+  hp:22,maxHp:22,atk:5,def:1,
+  gold:5,xp:0,level:1,
+  inventory:[],
+  location:"crossroads",
+  enemy:null,
+  phase:"explore",
+  abilityCDs:{},
+  debuffs:[]
+};
+
+const XP_PER_LEVEL=lvl=>lvl*40+10;
+
+const ABILITIES=[
+  {id:"slash",name:"Power Slash",desc:"150% ATK",unlockLvl:1,cd:3,
+   use(e){const d=Math.round(S.atk*1.5+rnd(3));e.hp-=d;print("Power Slash — "+d+" dmg!","ability-line")}},
+  {id:"bash",name:"Shield Bash",desc:"Stun + low dmg",unlockLvl:2,cd:4,
+   use(e){const d=Math.round(S.atk*0.5);e.hp-=d;e.stunTurns=2;print("Shield Bash! "+d+" dmg, enemy stunned 2 turns!","ability-line")}},
+  {id:"flurry",name:"Flurry",desc:"4 quick hits",unlockLvl:3,cd:4,
+   use(e){let t=0;for(let i=0;i<4;i++){const d=Math.max(1,S.atk-2+rnd(4));e.hp-=d;t+=d;}print("Flurry! 4 hits for "+t+" total!","ability-line")}},
+  {id:"rally",name:"Rally",desc:"Heal 25% max HP",unlockLvl:4,cd:5,
+   use(){const h=Math.round(S.maxHp*0.25);S.hp=Math.min(S.maxHp,S.hp+h);print("Rally! +"+h+" HP","ability-line")}},
+  {id:"execute",name:"Execute",desc:"2x dmg if enemy <25%",unlockLvl:5,cd:3,
+   use(e){const low=e.hp/e.maxHp<0.25;const d=Math.round(S.atk*(low?2.2:1.1)+rnd(4));e.hp-=d;print("Execute "+(low?"— LETHAL! ":"")+d+" dmg!","ability-line")}},
+  {id:"meteor",name:"Meteor",desc:"Massive hit, CD 6",unlockLvl:6,cd:6,
+   use(e){const d=Math.round(S.atk*2.8+rnd(10));e.hp-=d;print("METEOR — "+d+" damage!!!","ability-line")}}
+];
+
+const LOCATIONS={
+  crossroads:{name:"The Verdant Crossroads",desc:"A stone marker. Two roads. Birds. Danger nearby.",exits:{forest:"Enter the Dark Forest",cave:"Descend into the Cave",ruins:"Ancient Ruins (dangerous)",town:"Walk to Millhaven Town"}},
+  forest:{name:"Dark Forest",desc:"Something growls. Retreat is always an option.",exits:{crossroads:"Back to Crossroads"}},
+  cave:{name:"Dripping Cave",desc:"Cold stone. Glowing glyphs. Death lives here.",exits:{crossroads:"Back to Crossroads"}},
+  ruins:{name:"Ancient Ruins",desc:"Shattered towers. Old magic hums. Only veterans survive.",exits:{crossroads:"Back to Crossroads"}},
+  town:{name:"Millhaven Town",desc:"Civilization. Rest. Expensive.",exits:{crossroads:"Back to Crossroads"}}
+};
+
+const ENEMIES={
+  forest:[
+    {name:"Goblin Scout",hp:12,maxHp:12,atk:6,def:0,minLvl:1,reward:{gold:4,xp:12}},
+    {name:"Rabid Wolf",hp:18,maxHp:18,atk:9,def:1,minLvl:1,reward:{gold:5,xp:18},
+     special:{name:"Lunge",chance:.35,msg:"lunges at you!",dmgMult:1.8}},
+    {name:"Orc Raider",hp:28,maxHp:28,atk:12,def:2,minLvl:2,reward:{gold:10,xp:32},
+     special:{name:"Rage",chance:.3,msg:"rages — doubles next hit!",dmgMult:2.0}},
+    {name:"Forest Witch",hp:22,maxHp:22,atk:15,def:0,minLvl:3,reward:{gold:14,xp:45},
+     special:{name:"Hex",chance:.4,msg:"hexes you! ATK-2 for 2 turns.",debuff:{stat:"atk",amt:2,turns:2}}},
+    {name:"Forest Hydra",hp:50,maxHp:50,atk:13,def:3,minLvl:4,reward:{gold:22,xp:65},
+     special:{name:"Regen",chance:.3,msg:"regenerates! +8 HP.",heal:8}},
+  ],
+  cave:[
+    {name:"Giant Bat",hp:10,maxHp:10,atk:5,def:0,minLvl:1,reward:{gold:3,xp:10}},
+    {name:"Stone Golem",hp:30,maxHp:30,atk:10,def:4,minLvl:1,reward:{gold:12,xp:38},
+     special:{name:"Crush",chance:.3,msg:"crushes you!",dmgMult:1.7}},
+    {name:"Cave Troll",hp:42,maxHp:42,atk:14,def:2,minLvl:3,reward:{gold:18,xp:55},
+     special:{name:"Smash",chance:.35,msg:"ground smash shockwave!",dmgMult:2.2}},
+    {name:"Shadow Wraith",hp:35,maxHp:35,atk:17,def:1,minLvl:4,reward:{gold:24,xp:68},
+     special:{name:"Drain",chance:.4,msg:"drains your life force!",dmgMult:1.4,lifeSteal:true}},
+    {name:"Basilisk",hp:55,maxHp:55,atk:16,def:3,minLvl:5,reward:{gold:30,xp:80},
+     special:{name:"Petrify",chance:.3,msg:"gazes at you — DEF-2 for 2 turns!",debuff:{stat:"def",amt:2,turns:2}}},
+  ],
+  ruins:[
+    {name:"Skeleton Knight",hp:38,maxHp:38,atk:12,def:3,minLvl:4,reward:{gold:20,xp:58}},
+    {name:"Cursed Mage",hp:30,maxHp:30,atk:20,def:0,minLvl:4,reward:{gold:25,xp:68},
+     special:{name:"Arcane Burst",chance:.45,msg:"Arcane Burst!",dmgMult:2.0}},
+    {name:"Lich",hp:55,maxHp:55,atk:17,def:2,minLvl:5,reward:{gold:36,xp:90},
+     special:{name:"Reanimate",chance:.25,msg:"reanimates — +15 HP!",heal:15}},
+    {name:"Death Knight",hp:65,maxHp:65,atk:19,def:4,minLvl:5,reward:{gold:42,xp:100},
+     special:{name:"Soul Rend",chance:.35,msg:"Soul Rend! Ignores your DEF.",dmgMult:1.6,ignoresDef:true}},
+    {isBoss:true,name:"BOSS: The Dread Knight",hp:95,maxHp:95,atk:22,def:5,minLvl:5,reward:{gold:85,xp:220},
+     phases:[
+       {threshold:0.6,msg:"Dread Knight enters second phase — Berserker Rage! ATK rises!",atkBoost:6},
+       {threshold:0.3,msg:"Dread Knight is near death — unleashing Death Shroud! DEF rises!",defBoost:5}
+     ],
+     special:{name:"Death Cleave",chance:.45,msg:"Death Cleave — devastating swing!",dmgMult:2.5}},
+    {isBoss:true,name:"BOSS: Archlich Mortavian",hp:130,maxHp:130,atk:26,def:3,minLvl:6,reward:{gold:130,xp:350},
+     phases:[
+       {threshold:0.7,msg:"Mortavian ascends — Lich Form! All specials more frequent!",specialBoost:0.2},
+       {threshold:0.4,msg:"Mortavian cracks the sky — Void Rift! ATK surges!",atkBoost:8}
+     ],
+     special:{name:"Soul Shatter",chance:.5,msg:"Soul Shatter — life drained!",dmgMult:2.2,lifeSteal:true}},
+  ]
+};
+
+const SHOP=[
+  {name:"Health Potion (+18 HP)",cost:10,fn(){S.inventory.push("potion");return"Potion added to bag"}},
+  {name:"Iron Sword (+2 ATK)",cost:18,fn(){S.atk+=2;return"ATK +2"}},
+  {name:"Tower Shield (+2 DEF)",cost:16,fn(){S.def+=2;return"DEF +2"}},
+  {name:"Max Elixir (full HP)",cost:30,fn(){const h=S.maxHp-S.hp;S.hp=S.maxHp;return"+"+h+" HP, fully restored"}},
+  {name:"War Tome (+3 ATK)",cost:35,fn(){S.atk+=3;return"ATK +3"}},
+];
+
+function rnd(n){return Math.floor(Math.random()*n);}
+const logEl=document.getElementById("log");
+function print(msg,cls=""){const p=document.createElement("p");p.className="log-line";p.innerHTML=cls?`<span class="${cls}">${msg}</span>`:msg;logEl.appendChild(p);logEl.scrollTop=logEl.scrollHeight;}
+function sep(){print("");}
+
+function applyDebuff(d){
+  S.debuffs.push({...d});
+  S[d.stat]-=d.amt;
+}
+function tickDebuffs(){
+  S.debuffs.forEach(d=>{d.turns--;if(d.turns<=0)S[d.stat]+=d.amt;});
+  S.debuffs=S.debuffs.filter(d=>d.turns>0);
+  renderDebuffs();
+}
+function renderDebuffs(){
+  const el=document.getElementById("debuffs");
+  if(!S.debuffs.length){el.textContent="";return;}
+  el.textContent=S.debuffs.map(d=>d.stat.toUpperCase()+"-"+d.amt+" ("+d.turns+"t)").join("  ");
+}
+
+function updateStats(){
+  document.getElementById("s-hp").textContent=S.hp+"/"+S.maxHp;
+  document.getElementById("s-atk").textContent=S.atk;
+  document.getElementById("s-def").textContent=S.def;
+  document.getElementById("s-gold").textContent=S.gold+"g";
+  document.getElementById("s-level").textContent=S.level;
+  const pct=Math.max(0,S.hp/S.maxHp*100);
+  const hb=document.getElementById("hp-bar");
+  hb.style.width=pct+"%";
+  hb.style.background=pct>50?"#3B6D11":pct>25?"#BA7517":"#A32D2D";
+  const needed=XP_PER_LEVEL(S.level);
+  document.getElementById("xp-bar").style.width=Math.min(100,S.xp/needed*100)+"%";
+  document.getElementById("xp-text").textContent=S.xp+"/"+needed;
+  document.getElementById("location-tag").textContent=LOCATIONS[S.location].name;
+}
+
+function updateEnemyBlock(){
+  const eb=document.getElementById("enemy-block");
+  if(!S.enemy){eb.style.display="none";return;}
+  eb.style.display="block";
+  eb.className=S.enemy.isBoss?"boss-block":"";
+  let nameStr=S.enemy.name;
+  if(S.enemy.stunTurns>0)nameStr+=" [STUNNED "+S.enemy.stunTurns+"]";
+  document.getElementById("enemy-name").textContent=nameStr;
+  const pct=Math.max(0,S.enemy.hp/S.enemy.maxHp*100);
+  document.getElementById("enemy-bar").style.width=pct+"%";
+  document.getElementById("enemy-hp-text").textContent="HP: "+Math.max(0,S.enemy.hp)+"/"+S.enemy.maxHp;
+}
+
+function checkBossPhase(){
+  if(!S.enemy||!S.enemy.phases)return;
+  S.enemy.phases.forEach(ph=>{
+    if(!ph.triggered&&S.enemy.hp/S.enemy.maxHp<=ph.threshold){
+      ph.triggered=true;
+      print(ph.msg,"boss-line");
+      if(ph.atkBoost)S.enemy.atk+=ph.atkBoost;
+      if(ph.defBoost)S.enemy.def=(S.enemy.def||0)+ph.defBoost;
+      if(ph.specialBoost)S.enemy.special.chance=Math.min(0.9,S.enemy.special.chance+ph.specialBoost);
+    }
+  });
+}
+
+function mkBtn(label,fn,cls,full){
+  const b=document.createElement("button");
+  if(cls)b.className=cls;
+  if(full)b.style.gridColumn="1 / -1";
+  b.innerHTML=label;b.onclick=fn;return b;
+}
+
+function renderAbilities(){
+  const row=document.getElementById("abilities-row");
+  row.innerHTML="";
+  const avail=ABILITIES.filter(a=>S.level>=a.unlockLvl);
+  if(!avail.length||!S.enemy){row.style.display="none";return;}
+  row.style.display="grid";
+  avail.forEach(ab=>{
+    const cd=S.abilityCDs[ab.id]||0;
+    const b=mkBtn(ab.name+(cd>0?` <span class="cd-badge">[${cd}]</span>`:""),()=>useAbility(ab),"btn-ability");
+    b.title=ab.desc+" | CD: "+ab.cd+(cd>0?" | Ready in "+cd+" turns":"");
+    if(cd>0)b.disabled=true;
+    row.appendChild(b);
+  });
+}
+
+function useAbility(ab){
+  if(!S.enemy)return;
+  S.abilityCDs[ab.id]=ab.cd;
+  ab.use(S.enemy);
+  checkBossPhase();
+  updateEnemyBlock();updateStats();
+  if(S.enemy&&S.enemy.hp<=0){enemyDied();return;}
+  if(S.enemy)enemyAttacks();
+  tickCDs();tickDebuffs();
+  if(S.hp>0)renderCombat();
+  updateStats();
+}
+
+function tickCDs(){Object.keys(S.abilityCDs).forEach(k=>{if(S.abilityCDs[k]>0)S.abilityCDs[k]--;});}
+
+function renderExplore(){
+  S.phase="explore";
+  document.getElementById("abilities-row").style.display="none";
+  const act=document.getElementById("actions");act.innerHTML="";
+  const loc=LOCATIONS[S.location];
+  Object.entries(loc.exits).forEach(([dest,label])=>{act.appendChild(mkBtn("→ "+label,()=>travel(dest)));});
+  const pool=(ENEMIES[S.location]||[]).filter(e=>S.level>=e.minLvl&&!e.isBoss);
+  const bossPool=(ENEMIES[S.location]||[]).filter(e=>e.isBoss&&S.level>=e.minLvl);
+  if(pool.length)act.appendChild(mkBtn("⚔ Search for enemies",()=>encounter(false)));
+  if(bossPool.length)act.appendChild(mkBtn("☠ Challenge a Boss",()=>encounter(true),"btn-boss"));
+  if(S.location==="town"){
+    act.appendChild(mkBtn("🛒 Visit merchant",()=>renderShop()));
+    if(S.hp<S.maxHp)act.appendChild(mkBtn("🛏 Rest — costs 6g",()=>{
+      if(S.gold<6){print("Can't afford rest (need 6g).","dmg");return;}
+      S.gold-=6;S.hp=S.maxHp;print("Rested fully. -6g","ok");updateStats();renderExplore();
+    }));
+  }
+}
+
+function travel(dest){
+  S.location=dest;
+  const loc=LOCATIONS[dest];
+  sep();print("— "+loc.name+" —","em");print(loc.desc,"muted");
+  updateStats();renderExplore();
+}
+
+function encounter(bossOnly){
+  let pool=(ENEMIES[S.location]||[]).filter(e=>S.level>=e.minLvl);
+  pool=bossOnly?pool.filter(e=>e.isBoss):pool.filter(e=>!e.isBoss);
+  if(!pool.length){print("Nothing to fight here.","muted");return;}
+  const tmpl=pool[rnd(pool.length)];
+  S.enemy=JSON.parse(JSON.stringify(tmpl));
+  sep();
+  if(S.enemy.isBoss)print("★ BOSS: "+S.enemy.name+" ★","boss-line");
+  else print("A "+S.enemy.name+" blocks your path! HP: "+S.enemy.hp,"dmg");
+  updateEnemyBlock();renderCombat();
+}
+
+function renderCombat(){
+  S.phase="combat";
+  renderAbilities();
+  const act=document.getElementById("actions");act.innerHTML="";
+  act.appendChild(mkBtn("⚔ Attack",()=>doAttack()));
+  act.appendChild(mkBtn("🏃 Flee (60% fail)",()=>flee()));
+  const pots=S.inventory.filter(i=>i==="potion").length;
+  if(pots>0)act.appendChild(mkBtn("🧪 Use Potion ("+pots+")",()=>usePotion()));
+}
+
+function playerDmg(){
+  const base=Math.max(1,S.atk+rnd(3)-1);
+  const enemyDef=S.enemy.def||0;
+  return Math.max(1,base-enemyDef);
+}
+
+function doAttack(){
+  if(!S.enemy)return;
+  const d=playerDmg();
+  S.enemy.hp-=d;
+  print("You hit "+S.enemy.name+" for "+d+" dmg.","ok");
+  checkBossPhase();
+  updateEnemyBlock();
+  if(S.enemy.hp<=0){enemyDied();return;}
+  enemyAttacks();
+  tickCDs();tickDebuffs();
+  if(S.hp>0){renderCombat();updateStats();}
+}
+
+function enemyAttacks(){
+  if(!S.enemy)return;
+  if(S.enemy.stunTurns>0){
+    S.enemy.stunTurns--;
+    print(S.enemy.name+" is stunned! ("+S.enemy.stunTurns+" left)","muted");
+    updateEnemyBlock();return;
+  }
+  let baseDmg=Math.max(1,S.enemy.atk-S.def+rnd(4)-1);
+  const sp=S.enemy.special;
+  if(sp&&Math.random()<sp.chance){
+    if(sp.heal){
+      S.enemy.hp=Math.min(S.enemy.maxHp,S.enemy.hp+sp.heal);
+      print(S.enemy.name+" "+sp.msg,"boss-line");
+      updateEnemyBlock();return;
+    }
+    if(sp.debuff){
+      applyDebuff(sp.debuff);
+      print(S.enemy.name+" "+sp.msg,"boss-line");
+      renderDebuffs();
+    }
+    if(sp.ignoresDef)baseDmg=Math.max(1,S.enemy.atk+rnd(4)-1);
+    if(sp.dmgMult)baseDmg=Math.round(baseDmg*sp.dmgMult);
+    if(sp.lifeSteal){S.enemy.hp=Math.min(S.enemy.maxHp,S.enemy.hp+Math.round(baseDmg*0.35));updateEnemyBlock();}
+    print(S.enemy.name+" "+sp.msg+" "+baseDmg+" dmg!","boss-line");
+  }else{
+    print(S.enemy.name+" hits you for "+baseDmg+".","dmg");
+  }
+  S.hp-=baseDmg;
+  if(S.hp<=0){S.hp=0;updateStats();renderDead();}
+}
+
+function enemyDied(){
+  const r=S.enemy.reward;
+  S.gold+=r.gold;S.xp+=r.xp;
+  print("Victory! +"+r.gold+"g +"+r.xp+" XP","em");
+  if(S.enemy.isBoss)print("★ Boss slain! A legend is born.","boss-line");
+  S.enemy=null;
+  document.getElementById("enemy-block").style.display="none";
+  document.getElementById("abilities-row").style.display="none";
+  checkLevelUp();updateStats();renderExplore();
+}
+
+function checkLevelUp(){
+  const needed=XP_PER_LEVEL(S.level);
+  if(S.xp>=needed){
+    S.xp-=needed;S.level++;
+    S.maxHp+=6;S.hp=Math.min(S.maxHp,S.hp+6);S.atk+=1;
+    const newAb=ABILITIES.find(a=>a.unlockLvl===S.level);
+    print("✨ Level "+S.level+"! Max HP +6, ATK +1"+(newAb?" | New: "+newAb.name:""),"em");
+  }
+}
+
+function flee(){
+  if(Math.random()>0.6){
+    const penalty=Math.round(S.enemy.atk*0.5);
+    S.hp-=penalty;
+    print("Barely escaped! Hit for "+penalty+" while fleeing.","dmg");
+    S.enemy=null;
+    document.getElementById("enemy-block").style.display="none";
+    document.getElementById("abilities-row").style.display="none";
+    updateStats();
+    if(S.hp<=0){renderDead();return;}
+    renderExplore();
+  }else{
+    const d=Math.max(1,S.enemy.atk-S.def+rnd(3));
+    S.hp-=d;print("Failed to flee! "+S.enemy.name+" hits for "+d+".","dmg");
+    updateStats();if(S.hp<=0){renderDead();return;}
+    renderCombat();
+  }
+}
+
+function usePotion(){
+  const idx=S.inventory.indexOf("potion");if(idx<0)return;
+  S.inventory.splice(idx,1);
+  const h=Math.min(S.maxHp-S.hp,18);S.hp+=h;
+  print("Potion: +"+h+" HP","ok");updateStats();
+  if(S.phase==="combat")renderCombat();
+}
+
+function renderShop(){
+  document.getElementById("abilities-row").style.display="none";
+  const act=document.getElementById("actions");act.innerHTML="";
+  SHOP.forEach(item=>{
+    const b=mkBtn(item.name+" ("+item.cost+"g)",()=>{
+      if(S.gold<item.cost){print("Not enough gold.","dmg");return;}
+      S.gold-=item.cost;const res=item.fn();
+      print("Bought: "+item.name+". "+res,"ok");updateStats();renderShop();
+    });
+    if(S.gold<item.cost)b.disabled=true;
+    act.appendChild(b);
+  });
+  act.appendChild(mkBtn("← Leave shop",()=>renderExplore(),null,true));
+}
+
+function renderDead(){
+  document.getElementById("abilities-row").style.display="none";
+  document.getElementById("enemy-block").style.display="none";
+  const act=document.getElementById("actions");act.innerHTML="";
+  print("You have been slain. No mercy in this world.","dmg");
+  act.appendChild(mkBtn("↩ Start over",()=>{
+    Object.assign(S,{hp:22,maxHp:22,atk:5,def:1,gold:5,xp:0,level:1,inventory:[],location:"crossroads",enemy:null,phase:"explore",abilityCDs:{},debuffs:[]});
+    logEl.innerHTML="";print("A new hero rises. Again.","muted");travel("crossroads");
+  },null,true));
+}
+
+print("Hard mode. No hand-holding.","boss-line");
+print("Rest costs gold. Fleeing hurts. Enemies hit back hard.","muted");
+travel("crossroads");
+</script>
