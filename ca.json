@@ -1,0 +1,258 @@
+{
+  "_meta": {
+    "lang": "ca",
+    "name": "Català",
+    "status": "review"
+  },
+
+  "ui": {
+    "logoTitle": "Cròniques de la Cruïlla Verdant",
+    "logoSub": "Tria el teu destí, heroi. El món t'espera.",
+    "langLbl": "Idioma",
+    "diffLbl": "Selecciona dificultat",
+    "menu": "← Menú",
+    "gameTitle": "Cròniques de la Cruïlla Verdant"
+  },
+
+  "badges": {
+    "easy": "Fàcil",
+    "balanced": "Normal",
+    "hard": "Difícil",
+    "langCode": "CA"
+  },
+
+  "difficulty": {
+    "easy": {
+      "tag": "Fàcil",
+      "name": "Camí del Pelegrí",
+      "desc": "Per a qui vol explorar la història sense morir massa.",
+      "stats": "HP: 30 · ATK: 6 · DEF: 2\nDescans: gratis · Fugida: fàcil\nXP: pujada ràpida"
+    },
+    "balanced": {
+      "tag": "Normal",
+      "name": "Ruta de l'Aventurer",
+      "desc": "Corba suau. Desafiament real sense ser injust.",
+      "stats": "HP: 22 · ATK: 5 · DEF: 1\nDescans: 6g · Enemics variats\nDebuffs + caps amb fases"
+    },
+    "hard": {
+      "tag": "Difícil",
+      "name": "Camí del Condemnat",
+      "desc": "Sense pietat. Cada decisió importa.",
+      "stats": "HP: 22 · ATK: 5 · DEF: 1\nDescans: 6g · Fugida penalitzada\nEnemics durs · Sense marge"
+    }
+  },
+
+  "stats": {
+    "hp": "HP",
+    "atk": "ATK",
+    "def": "DEF",
+    "gold": "Or",
+    "level": "Nivell",
+    "xp": "XP"
+  },
+
+  "warn": {
+    "easy":     { "msg": "Benvingut, ànima valenta.",                           "sub": "Les habilitats es desbloquegen en pujar de nivell. Els caps esperen a les Ruïnes." },
+    "balanced": { "msg": "La corba és suau, però la mort vigila.",              "sub": "Entrena amb enemics febles abans d'aventurar-te més lluny." },
+    "hard":     { "msg": "Mode difícil. Sense tutorials.",                      "sub": "El descans costa or. Fugir fa mal. Els enemics colpegen fort." }
+  },
+
+  "locations": {
+    "crossroads": {
+      "name": "La Cruïlla Verdant",
+      "desc": "Una pedra marcadora. Dos camins. Perill proper.",
+      "exits": {
+        "forest": "Entrar al Bosc Fosc",
+        "cave":   "Baixar a la Cova",
+        "ruins":  "Ruïnes Antigues",
+        "town":   "Caminar a Millhaven"
+      }
+    },
+    "forest": {
+      "name": "Bosc Fosc",
+      "desc": "Arbres retorts. Llops i goblins ronden.",
+      "exits": { "crossroads": "Tornar a la Cruïlla" }
+    },
+    "cave": {
+      "name": "Cova Degotant",
+      "desc": "Pedra freda. Aigua degotant. Més dur que el bosc.",
+      "exits": { "crossroads": "Tornar a la Cruïlla" }
+    },
+    "ruins": {
+      "name": "Ruïnes Antigues",
+      "desc": "Torres en runes. Màgia antiga. Només per a veterans.",
+      "exits": { "crossroads": "Tornar a la Cruïlla" }
+    },
+    "town": {
+      "name": "Ciutat de Millhaven",
+      "desc": "Civilització. Descans. El mercader et saluda.",
+      "exits": { "crossroads": "Tornar a la Cruïlla" }
+    }
+  },
+
+  "actions": {
+    "searchEnemies":  "⚔ Buscar enemics",
+    "challengeBoss":  "☠ Desafiar un Cap",
+    "visitMerchant":  "Visitar mercader",
+    "restFree":       "Descansar (gratis, HP ple)",
+    "restCost":       "Descansar — {cost}g",
+    "attack":         "⚔ Atacar",
+    "flee":           "Fugir ({pct}% fallida)",
+    "potion":         "Usar Poció ({count})",
+    "shopLeave":      "← Sortir de la botiga"
+  },
+
+  "combat": {
+    "hitEnemy":       "Colpeges {enemy} per {dmg}.",
+    "bossAppears":    "★ CAP: {name} ★",
+    "enemyAppears":   "Un {name} apareix! HP: {hp}",
+    "enemyAttacks":   "{enemy} → {dmg}",
+    "stunned":        "{enemy} està atordit! ({turns} torns restants)",
+    "victory":        "Victòria! +{gold}g +{xp} XP",
+    "bossSlain":      "★ Cap derrotat! Neix una llegenda.",
+    "escapedFull":    "T'has escapat!",
+    "escapedHit":     "Gairebé has escapat! Colpejat per {dmg} en fugir.",
+    "fleeFailed":     "Fugida fallida! {enemy} et colpeja per {dmg}.",
+    "noEnemies":      "No hi ha enemics adequats aquí al teu nivell.",
+    "levelUp":        "✨ Nivell {lvl}! Max HP +{hp}, ATK +{atk}",
+    "levelUpAbility": "✨ Nivell {lvl}! Max HP +{hp}, ATK +{atk} | Nova: {ability}",
+    "potionHeal":     "Poció: +{hp} HP",
+    "cantAffordRest": "No tens prou or ({cost}g necessaris).",
+    "restedFully":    "Descansat. -{cost}g",
+    "restedFree":     "Completament descansat!",
+    "notEnoughGold":  "No tens prou or.",
+    "boughtMsg":      "Comprat: {item}"
+  },
+
+  "dead": {
+    "title":    "Has caigut",
+    "btn":      "Tornar a intentar",
+    "restart":  "Un nou heroi sorgeix a {location}.",
+    "sub": {
+      "easy":     "Fins i tot el Camí del Pelegrí té els seus perills.",
+      "balanced": "El món t'ha vençut. Torna més fort.",
+      "hard":     "Sense pietat en aquest món. Mai no n'hi ha hagut."
+    }
+  },
+
+  "shop": {
+    "items": [
+      "Poció de Vida (+HP)",
+      "Espasa de Ferro (+2 ATK)",
+      "Escut de Torre (+2 DEF)",
+      "Elixir Màxim (HP ple)",
+      "Tom de Guerra (+3 ATK)"
+    ]
+  },
+
+  "abilities": {
+    "slash":   { "name": "Tall Poderós",    "log": "Tall Poderós — {dmg} dany!" },
+    "bash":    { "name": "Cop d'Escut",     "log": "Cop d'Escut! {dmg} dany, atordit!" },
+    "flurry":  { "name": "Ràfega",          "log": "Ràfega! {hits} cops per {total} total!" },
+    "rally":   { "name": "Reagrupar-se",    "log": "Reagrupar-se! +{hp} HP" },
+    "execute": { "name": "Executar",        "log": "Executar {lethal}{dmg} dany!", "lethal": "— LETAL! " },
+    "meteor":  { "name": "Meteor",          "log": "METEOR — {dmg} dany!!!" }
+  },
+
+  "enemies": {
+    "easy": {
+      "forest": [
+        { "name": "Explorador Goblin", "special": null },
+        { "name": "Llop",              "special": null },
+        { "name": "Assaltant Orc",     "special": null },
+        { "name": "Bruixa del Bosc",   "special": "et malda!" }
+      ],
+      "cave": [
+        { "name": "Ratpenat Gegant",   "special": null },
+        { "name": "Gòlem de Pedra",    "special": null },
+        { "name": "Trol de Cova",      "special": "cop sísmic!" },
+        { "name": "Espectre Ombra",    "special": "et drenat la vida!" }
+      ],
+      "ruins": [
+        { "name": "Cavaller Esquelet",          "special": null },
+        { "name": "Mag Maleït",                 "special": "Esclat Arcà!" },
+        { "name": "Lig",                        "special": "es reanima! +10 HP" },
+        { "name": "CAP: El Cavaller Temut",     "isBoss": true, "special": "Tall Mortal — cop demolidor!" },
+        { "name": "CAP: Arxilig Mortavian",     "isBoss": true, "special": "Trencament d'ànima!" }
+      ]
+    },
+    "normal": {
+      "forest": [
+        { "name": "Explorador Goblin",  "special": null },
+        { "name": "Llop Salvatge",      "special": null },
+        { "name": "Bandoler",           "special": "et cop traïdorament!" },
+        { "name": "Assaltant Orc",      "special": "entra en fúria!" },
+        { "name": "Bruixa del Bosc",    "special": "et malda! ATK-2 2 torns" },
+        { "name": "Hidra del Bosc",     "special": "es regenera! +8 HP" }
+      ],
+      "cave": [
+        { "name": "Ratpenat Gegant",    "special": null },
+        { "name": "Eixam de Rates",     "special": null },
+        { "name": "Gòlem de Pedra",     "special": "t'aixafa!" },
+        { "name": "Trol de Cova",       "special": "cop a terra!" },
+        { "name": "Espectre Ombra",     "special": "et drenat la vida!" },
+        { "name": "Basilisc",           "special": "et petrifica! DEF-2 2 torns" }
+      ],
+      "ruins": [
+        { "name": "Cavaller Esquelet",          "special": null },
+        { "name": "Mag Maleït",                 "special": "Esclat Arcà!" },
+        { "name": "Lig",                        "special": "es reanima! +15 HP" },
+        { "name": "Cavaller de la Mort",        "special": "Ànima Esberlada — ignora DEF!" },
+        { "name": "CAP: El Cavaller Temut",
+          "isBoss": true,
+          "special": "Tall Mortal!",
+          "phases": [
+            "El Cavaller Temut — Fúria Berserker! ATK +6",
+            "El Cavaller Temut — Sudari Mortal! DEF +5"
+          ]
+        },
+        { "name": "CAP: Arxilig Mortavian",
+          "isBoss": true,
+          "special": "Trencament d'ànima!",
+          "phases": [
+            "Mortavian ascendeix — Forma Lig! Especials més freqüents.",
+            "Mortavian — Escletxa del Buit! ATK +8"
+          ]
+        }
+      ]
+    },
+    "hard": {
+      "forest": [
+        { "name": "Explorador Goblin", "special": null },
+        { "name": "Llop Rabiós",       "special": "et embesteix!" },
+        { "name": "Assaltant Orc",     "special": "entra en fúria!" },
+        { "name": "Bruixa del Bosc",   "special": "malda! ATK-2 2 torns" },
+        { "name": "Hidra del Bosc",    "special": "es regenera! +8 HP" }
+      ],
+      "cave": [
+        { "name": "Ratpenat Gegant",   "special": null },
+        { "name": "Gòlem de Pedra",    "special": "t'aixafa!" },
+        { "name": "Trol de Cova",      "special": "ona de xoc!" },
+        { "name": "Espectre Ombra",    "special": "et drenat la força vital!" },
+        { "name": "Basilisc",          "special": "et petrifica! DEF-2 2 torns" }
+      ],
+      "ruins": [
+        { "name": "Cavaller Esquelet",       "special": null },
+        { "name": "Mag Maleït",              "special": "Esclat Arcà!" },
+        { "name": "Lig",                     "special": "es reanima! +15 HP" },
+        { "name": "Cavaller de la Mort",     "special": "Ànima Esberlada! Ignora DEF" },
+        { "name": "CAP: El Cavaller Temut",
+          "isBoss": true,
+          "special": "Tall Mortal!",
+          "phases": [
+            "El Cavaller Temut — Fúria Berserker! ATK puja.",
+            "El Cavaller Temut — Sudari Mortal! DEF puja."
+          ]
+        },
+        { "name": "CAP: Arxilig Mortavian",
+          "isBoss": true,
+          "special": "Trencament d'ànima!",
+          "phases": [
+            "Mortavian ascendeix! Tots els especials més freqüents.",
+            "Mortavian — Escletxa del Buit! ATK s'accelera."
+          ]
+        }
+      ]
+    }
+  }
+}

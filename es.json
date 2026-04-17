@@ -1,0 +1,258 @@
+{
+  "_meta": {
+    "lang": "es",
+    "name": "Español",
+    "status": "review"
+  },
+
+  "ui": {
+    "logoTitle": "Crónicas de la Encrucijada Verdante",
+    "logoSub": "Elige tu destino, héroe. El mundo espera.",
+    "langLbl": "Idioma",
+    "diffLbl": "Selecciona dificultad",
+    "menu": "← Menú",
+    "gameTitle": "Crónicas de la Encrucijada Verdante"
+  },
+
+  "badges": {
+    "easy": "Fácil",
+    "balanced": "Normal",
+    "hard": "Difícil",
+    "langCode": "ES"
+  },
+
+  "difficulty": {
+    "easy": {
+      "tag": "Fácil",
+      "name": "Sendero del Peregrino",
+      "desc": "Para quienes quieren explorar la historia sin morir demasiado.",
+      "stats": "HP: 30 · ATK: 6 · DEF: 2\nDescanso: gratis · Huida: fácil\nXP: subida rápida"
+    },
+    "balanced": {
+      "tag": "Normal",
+      "name": "Ruta del Aventurero",
+      "desc": "Curva suave. Desafío real sin ser injusto.",
+      "stats": "HP: 22 · ATK: 5 · DEF: 1\nDescanso: 6g · Enemigos variados\nDebuffs + jefes con fases"
+    },
+    "hard": {
+      "tag": "Difícil",
+      "name": "Camino del Condenado",
+      "desc": "Sin piedad. Cada decisión importa.",
+      "stats": "HP: 22 · ATK: 5 · DEF: 1\nDescanso: 6g · Huida penalizada\nEnemigos duros · Sin margen"
+    }
+  },
+
+  "stats": {
+    "hp": "HP",
+    "atk": "ATK",
+    "def": "DEF",
+    "gold": "Oro",
+    "level": "Nivel",
+    "xp": "XP"
+  },
+
+  "warn": {
+    "easy":     { "msg": "Bienvenido, valiente alma.",                          "sub": "Las habilidades se desbloquean al subir de nivel. Los jefes esperan en las Ruinas." },
+    "balanced": { "msg": "La curva es suave, pero la muerte acecha.",           "sub": "Entrena con enemigos débiles antes de aventurarte más lejos." },
+    "hard":     { "msg": "Modo difícil. Sin tutoriales.",                       "sub": "El descanso cuesta oro. Huir duele. Los enemigos golpean fuerte." }
+  },
+
+  "locations": {
+    "crossroads": {
+      "name": "El Cruce Verdeante",
+      "desc": "Una marca de piedra musgosa. Dos caminos. Peligro cercano.",
+      "exits": {
+        "forest": "Entrar al Bosque Oscuro",
+        "cave":   "Descender a la Cueva",
+        "ruins":  "Ruinas Antiguas",
+        "town":   "Caminar a Millhaven"
+      }
+    },
+    "forest": {
+      "name": "Bosque Oscuro",
+      "desc": "Árboles retorcidos. Lobos y goblins merodean.",
+      "exits": { "crossroads": "Volver al Cruce" }
+    },
+    "cave": {
+      "name": "Cueva Goteante",
+      "desc": "Piedra fría. Agua goteando. Más duro que el bosque.",
+      "exits": { "crossroads": "Volver al Cruce" }
+    },
+    "ruins": {
+      "name": "Ruinas Antiguas",
+      "desc": "Torres en ruinas. Magia antigua. Solo para veteranos.",
+      "exits": { "crossroads": "Volver al Cruce" }
+    },
+    "town": {
+      "name": "Ciudad de Millhaven",
+      "desc": "Civilización. Descanso. El mercader te saluda.",
+      "exits": { "crossroads": "Volver al Cruce" }
+    }
+  },
+
+  "actions": {
+    "searchEnemies":  "⚔ Buscar enemigos",
+    "challengeBoss":  "☠ Desafiar un Jefe",
+    "visitMerchant":  "Visitar mercader",
+    "restFree":       "Descansar (gratis, HP lleno)",
+    "restCost":       "Descansar — {cost}g",
+    "attack":         "⚔ Atacar",
+    "flee":           "Huir ({pct}% fallo)",
+    "potion":         "Usar Poción ({count})",
+    "shopLeave":      "← Salir de la tienda"
+  },
+
+  "combat": {
+    "hitEnemy":       "Golpeas a {enemy} por {dmg}.",
+    "bossAppears":    "★ JEFE: {name} ★",
+    "enemyAppears":   "¡Un {name} aparece! HP: {hp}",
+    "enemyAttacks":   "{enemy} → {dmg}",
+    "stunned":        "¡{enemy} está aturdido! ({turns} restantes)",
+    "victory":        "¡Victoria! +{gold}g +{xp} XP",
+    "bossSlain":      "★ ¡Jefe derrotado! Una leyenda nace.",
+    "escapedFull":    "¡Escapaste!",
+    "escapedHit":     "¡Apenas escapaste! Golpeado por {dmg} al huir.",
+    "fleeFailed":     "¡Huida fallida! {enemy} te golpea por {dmg}.",
+    "noEnemies":      "No hay enemigos adecuados aquí en tu nivel.",
+    "levelUp":        "✨ ¡Nivel {lvl}! Max HP +{hp}, ATK +{atk}",
+    "levelUpAbility": "✨ ¡Nivel {lvl}! Max HP +{hp}, ATK +{atk} | ¡Nueva: {ability}",
+    "potionHeal":     "Poción: +{hp} HP",
+    "cantAffordRest": "No tienes suficiente oro ({cost}g necesarios).",
+    "restedFully":    "Descansado. -{cost}g",
+    "restedFree":     "¡Completamente descansado!",
+    "notEnoughGold":  "No tienes suficiente oro.",
+    "boughtMsg":      "Comprado: {item}"
+  },
+
+  "dead": {
+    "title":    "Has caído",
+    "btn":      "Volver a intentar",
+    "restart":  "Un nuevo héroe surge en {location}.",
+    "sub": {
+      "easy":     "Incluso el Sendero del Peregrino tiene sus peligros.",
+      "balanced": "El mundo te venció esta vez. Regresa más fuerte.",
+      "hard":     "Sin piedad en este mundo. Nunca la hubo."
+    }
+  },
+
+  "shop": {
+    "items": [
+      "Poción de Vida (+HP)",
+      "Espada de Hierro (+2 ATK)",
+      "Escudo de Torre (+2 DEF)",
+      "Elixir Máximo (HP lleno)",
+      "Tomo de Guerra (+3 ATK)"
+    ]
+  },
+
+  "abilities": {
+    "slash":   { "name": "Tajo Poderoso",    "log": "¡Tajo Poderoso — {dmg} daño!" },
+    "bash":    { "name": "Golpe de Escudo",  "log": "¡Golpe de Escudo! {dmg} daño, ¡aturdido!" },
+    "flurry":  { "name": "Ráfaga",           "log": "¡Ráfaga! {hits} golpes por {total} total!" },
+    "rally":   { "name": "Reagruparse",      "log": "¡Reagruparse! +{hp} HP" },
+    "execute": { "name": "Ejecutar",         "log": "Ejecutar {lethal}{dmg} daño!", "lethal": "— ¡LETAL! " },
+    "meteor":  { "name": "Meteoro",          "log": "¡¡¡METEORO — {dmg} daño!!!" }
+  },
+
+  "enemies": {
+    "easy": {
+      "forest": [
+        { "name": "Explorador Goblin", "special": null },
+        { "name": "Lobo",              "special": null },
+        { "name": "Asaltante Orco",    "special": null },
+        { "name": "Bruja del Bosque",  "special": "¡te maldice!" }
+      ],
+      "cave": [
+        { "name": "Murciélago Gigante", "special": null },
+        { "name": "Gólem de Piedra",    "special": null },
+        { "name": "Trol de Cueva",      "special": "¡golpe sísmico!" },
+        { "name": "Espectro Sombra",    "special": "¡drena tu vida!" }
+      ],
+      "ruins": [
+        { "name": "Caballero Esqueleto",    "special": null },
+        { "name": "Mago Maldito",           "special": "¡explosión arcana!" },
+        { "name": "Liche",                  "special": "¡se reanima! +10 HP" },
+        { "name": "JEFE: El Caballero Temido",   "isBoss": true, "special": "¡golpe demoledor!" },
+        { "name": "JEFE: Archliche Mortavian",   "isBoss": true, "special": "¡fragmenta tu alma!" }
+      ]
+    },
+    "normal": {
+      "forest": [
+        { "name": "Explorador Goblin",  "special": null },
+        { "name": "Lobo Salvaje",       "special": null },
+        { "name": "Bandido",            "special": "¡te golpea a traición!" },
+        { "name": "Asaltante Orco",     "special": "¡entra en furia!" },
+        { "name": "Bruja del Bosque",   "special": "¡te maldice! ATK-2 2 turnos" },
+        { "name": "Hidra del Bosque",   "special": "¡se regenera! +8 HP" }
+      ],
+      "cave": [
+        { "name": "Murciélago Gigante", "special": null },
+        { "name": "Enjambre de Ratas",  "special": null },
+        { "name": "Gólem de Piedra",    "special": "¡te aplasta!" },
+        { "name": "Trol de Cueva",      "special": "¡golpe al suelo!" },
+        { "name": "Espectro Sombra",    "special": "¡drena tu vida!" },
+        { "name": "Basilisco",          "special": "¡te petrifica! DEF-2 2 turnos" }
+      ],
+      "ruins": [
+        { "name": "Caballero Esqueleto",       "special": null },
+        { "name": "Mago Maldito",              "special": "¡Explosión Arcana!" },
+        { "name": "Liche",                     "special": "¡se reanima! +15 HP" },
+        { "name": "Caballero de la Muerte",    "special": "¡Desgarrar Alma — ignora DEF!" },
+        { "name": "JEFE: El Caballero Temido",
+          "isBoss": true,
+          "special": "¡Tajo Mortal!",
+          "phases": [
+            "¡El Caballero Temido — Furia Berserker! ATK +6",
+            "¡El Caballero Temido — Sudario de Muerte! DEF +5"
+          ]
+        },
+        { "name": "JEFE: Archliche Mortavian",
+          "isBoss": true,
+          "special": "¡Fragmentar Alma!",
+          "phases": [
+            "¡Mortavian asciende — Forma Liche!",
+            "¡Mortavian — Fisura del Vacío! ATK +8"
+          ]
+        }
+      ]
+    },
+    "hard": {
+      "forest": [
+        { "name": "Explorador Goblin", "special": null },
+        { "name": "Lobo Rabioso",      "special": "¡te embiste!" },
+        { "name": "Asaltante Orco",    "special": "¡entra en furia!" },
+        { "name": "Bruja del Bosque",  "special": "¡maldice! ATK-2 2 turnos" },
+        { "name": "Hidra del Bosque",  "special": "¡se regenera! +8 HP" }
+      ],
+      "cave": [
+        { "name": "Murciélago Gigante", "special": null },
+        { "name": "Gólem de Piedra",    "special": "¡te aplasta!" },
+        { "name": "Trol de Cueva",      "special": "¡onda de choque!" },
+        { "name": "Espectro Sombra",    "special": "¡drena tu fuerza vital!" },
+        { "name": "Basilisco",          "special": "¡te petrifica! DEF-2 2 turnos" }
+      ],
+      "ruins": [
+        { "name": "Caballero Esqueleto",     "special": null },
+        { "name": "Mago Maldito",            "special": "¡Explosión Arcana!" },
+        { "name": "Liche",                   "special": "¡se reanima! +15 HP" },
+        { "name": "Caballero de la Muerte",  "special": "¡Desgarrar Alma! Ignora DEF" },
+        { "name": "JEFE: El Caballero Temido",
+          "isBoss": true,
+          "special": "¡Tajo Mortal!",
+          "phases": [
+            "¡El Caballero Temido — Furia Berserker! ATK sube.",
+            "¡El Caballero Temido — Sudario de Muerte! DEF sube."
+          ]
+        },
+        { "name": "JEFE: Archliche Mortavian",
+          "isBoss": true,
+          "special": "¡Fragmentar Alma!",
+          "phases": [
+            "¡Mortavian asciende! Todos los especiales más frecuentes.",
+            "¡Mortavian — Fisura del Vacío! ATK se dispara."
+          ]
+        }
+      ]
+    }
+  }
+}

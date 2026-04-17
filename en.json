@@ -1,0 +1,258 @@
+{
+  "_meta": {
+    "lang": "en",
+    "name": "English",
+    "status": "source"
+  },
+
+  "ui": {
+    "logoTitle": "Chronicles of the Verdant Crossroads",
+    "logoSub": "Choose your fate, hero. The world awaits.",
+    "langLbl": "Language",
+    "diffLbl": "Select difficulty",
+    "menu": "← Menu",
+    "gameTitle": "Chronicles of the Verdant Crossroads"
+  },
+
+  "badges": {
+    "easy": "Easy",
+    "balanced": "Normal",
+    "hard": "Hard",
+    "langCode": "EN"
+  },
+
+  "difficulty": {
+    "easy": {
+      "tag": "Easy",
+      "name": "Pilgrim's Path",
+      "desc": "For those who want to explore the story without dying too much.",
+      "stats": "HP: 30 · ATK: 6 · DEF: 2\nRest: free · Flee: easier\nXP: fast levelling"
+    },
+    "balanced": {
+      "tag": "Normal",
+      "name": "Adventurer's Route",
+      "desc": "Smooth difficulty curve. Real challenge without being unfair.",
+      "stats": "HP: 22 · ATK: 5 · DEF: 1\nRest: 6g · Varied enemies\nDebuffs + phased bosses"
+    },
+    "hard": {
+      "tag": "Hard",
+      "name": "Condemned's Road",
+      "desc": "No mercy. Every decision matters. Death is permanent.",
+      "stats": "HP: 22 · ATK: 5 · DEF: 1\nRest: 6g · Flee penalized\nHarder enemies · No margin"
+    }
+  },
+
+  "stats": {
+    "hp": "HP",
+    "atk": "ATK",
+    "def": "DEF",
+    "gold": "Gold",
+    "level": "Level",
+    "xp": "XP"
+  },
+
+  "warn": {
+    "easy":     { "msg": "Welcome, brave soul.",                          "sub": "Abilities unlock as you level up. Bosses await in the Ruins." },
+    "balanced": { "msg": "The curve is smooth — but death still lurks.",  "sub": "Train on weaker enemies before venturing further." },
+    "hard":     { "msg": "Hard mode. No hand-holding.",                   "sub": "Rest costs gold. Fleeing hurts. Enemies hit back hard." }
+  },
+
+  "locations": {
+    "crossroads": {
+      "name": "The Verdant Crossroads",
+      "desc": "A mossy stone marker. Two roads. Danger is close.",
+      "exits": {
+        "forest": "Enter the Dark Forest",
+        "cave":   "Descend into the Cave",
+        "ruins":  "Ancient Ruins",
+        "town":   "Walk to Millhaven"
+      }
+    },
+    "forest": {
+      "name": "Dark Forest",
+      "desc": "Gnarled trees. Wolves and goblins roam.",
+      "exits": { "crossroads": "Back to Crossroads" }
+    },
+    "cave": {
+      "name": "Dripping Cave",
+      "desc": "Cold stone. Dripping water. Tougher than the forest.",
+      "exits": { "crossroads": "Back to Crossroads" }
+    },
+    "ruins": {
+      "name": "Ancient Ruins",
+      "desc": "Crumbling towers. Old magic. Veterans only.",
+      "exits": { "crossroads": "Back to Crossroads" }
+    },
+    "town": {
+      "name": "Millhaven Town",
+      "desc": "Civilization. Rest. The merchant greets you.",
+      "exits": { "crossroads": "Back to Crossroads" }
+    }
+  },
+
+  "actions": {
+    "searchEnemies":  "⚔ Search for enemies",
+    "challengeBoss":  "☠ Challenge a Boss",
+    "visitMerchant":  "Visit merchant",
+    "restFree":       "Rest (free — full HP)",
+    "restCost":       "Rest — {cost}g",
+    "attack":         "⚔ Attack",
+    "flee":           "Run ({pct}% fail)",
+    "potion":         "Use Potion ({count})",
+    "shopLeave":      "← Leave shop"
+  },
+
+  "combat": {
+    "hitEnemy":       "You hit {enemy} for {dmg}.",
+    "bossAppears":    "★ BOSS: {name} ★",
+    "enemyAppears":   "A {name} appears! HP: {hp}",
+    "enemyAttacks":   "{enemy} → {dmg}",
+    "stunned":        "{enemy} is stunned! ({turns} left)",
+    "victory":        "Victory! +{gold}g +{xp} XP",
+    "bossSlain":      "★ Boss slain! A legend is born.",
+    "escapedFull":    "Escaped!",
+    "escapedHit":     "Barely escaped! Hit for {dmg} while fleeing.",
+    "fleeFailed":     "Failed to flee! {enemy} hits for {dmg}.",
+    "noEnemies":      "No suitable enemies here at your level.",
+    "levelUp":        "✨ Level {lvl}! Max HP +{hp}, ATK +{atk}",
+    "levelUpAbility": "✨ Level {lvl}! Max HP +{hp}, ATK +{atk} | New: {ability}",
+    "potionHeal":     "Potion: +{hp} HP",
+    "cantAffordRest": "Can't afford rest (need {cost}g).",
+    "restedFully":    "Rested fully. -{cost}g",
+    "restedFree":     "Fully rested!",
+    "notEnoughGold":  "Not enough gold.",
+    "boughtMsg":      "Bought: {item}"
+  },
+
+  "dead": {
+    "title":    "You have fallen",
+    "btn":      "Try again",
+    "restart":  "A new hero rises in {location}.",
+    "sub": {
+      "easy":     "Even the Pilgrim's Path has its dangers.",
+      "balanced": "The world defeated you. Come back stronger.",
+      "hard":     "No mercy in this world. There never was."
+    }
+  },
+
+  "shop": {
+    "items": [
+      "Health Potion (+HP)",
+      "Iron Sword (+2 ATK)",
+      "Tower Shield (+2 DEF)",
+      "Max Elixir (full HP)",
+      "War Tome (+3 ATK)"
+    ]
+  },
+
+  "abilities": {
+    "slash":   { "name": "Power Slash",   "log": "Power Slash — {dmg} dmg!" },
+    "bash":    { "name": "Shield Bash",   "log": "Shield Bash! {dmg} dmg, stunned!" },
+    "flurry":  { "name": "Flurry",        "log": "Flurry! {hits} hits for {total} total!" },
+    "rally":   { "name": "Rally",         "log": "Rally! +{hp} HP" },
+    "execute": { "name": "Execute",       "log": "Execute {lethal}{dmg} dmg!", "lethal": "— LETHAL! " },
+    "meteor":  { "name": "Meteor",        "log": "METEOR — {dmg} damage!!!" }
+  },
+
+  "enemies": {
+    "easy": {
+      "forest": [
+        { "name": "Goblin Scout",  "special": null },
+        { "name": "Wolf",          "special": null },
+        { "name": "Orc Raider",    "special": null },
+        { "name": "Forest Witch",  "special": "casts Hex!" }
+      ],
+      "cave": [
+        { "name": "Giant Bat",     "special": null },
+        { "name": "Stone Golem",   "special": null },
+        { "name": "Cave Troll",    "special": "seismic slam!" },
+        { "name": "Shadow Wraith", "special": "drains your life!" }
+      ],
+      "ruins": [
+        { "name": "Skeleton Knight",      "special": null },
+        { "name": "Cursed Mage",          "special": "Arcane Burst!" },
+        { "name": "Lich",                 "special": "reanimates! +10 HP" },
+        { "name": "BOSS: The Dread Knight",   "isBoss": true, "special": "Death Cleave — massive blow!" },
+        { "name": "BOSS: Archlich Mortavian", "isBoss": true, "special": "Soul Shatter!" }
+      ]
+    },
+    "normal": {
+      "forest": [
+        { "name": "Goblin Scout",   "special": null },
+        { "name": "Wild Wolf",      "special": null },
+        { "name": "Bandit",         "special": "cheap shots you!" },
+        { "name": "Orc Raider",     "special": "rages!" },
+        { "name": "Forest Witch",   "special": "hexes you! ATK-2 2 turns" },
+        { "name": "Forest Hydra",   "special": "regenerates! +8 HP" }
+      ],
+      "cave": [
+        { "name": "Giant Bat",      "special": null },
+        { "name": "Cave Rat Swarm", "special": null },
+        { "name": "Stone Golem",    "special": "crushes you!" },
+        { "name": "Cave Troll",     "special": "ground smash!" },
+        { "name": "Shadow Wraith",  "special": "drains your life!" },
+        { "name": "Basilisk",       "special": "petrifies! DEF-2 2 turns" }
+      ],
+      "ruins": [
+        { "name": "Skeleton Knight",  "special": null },
+        { "name": "Cursed Mage",      "special": "Arcane Burst!" },
+        { "name": "Lich",             "special": "reanimates! +15 HP" },
+        { "name": "Death Knight",     "special": "Soul Rend — ignores DEF!" },
+        { "name": "BOSS: The Dread Knight",
+          "isBoss": true,
+          "special": "Death Cleave!",
+          "phases": [
+            "Dread Knight — Berserker Rage! ATK +6",
+            "Dread Knight — Death Shroud! DEF +5"
+          ]
+        },
+        { "name": "BOSS: Archlich Mortavian",
+          "isBoss": true,
+          "special": "Soul Shatter!",
+          "phases": [
+            "Mortavian ascends — Lich Form! Specials more frequent.",
+            "Mortavian — Void Rift! ATK +8"
+          ]
+        }
+      ]
+    },
+    "hard": {
+      "forest": [
+        { "name": "Goblin Scout",  "special": null },
+        { "name": "Rabid Wolf",    "special": "lunges at you!" },
+        { "name": "Orc Raider",    "special": "rages!" },
+        { "name": "Forest Witch",  "special": "hexes! ATK-2 2 turns" },
+        { "name": "Forest Hydra",  "special": "regenerates! +8 HP" }
+      ],
+      "cave": [
+        { "name": "Giant Bat",     "special": null },
+        { "name": "Stone Golem",   "special": "crushes you!" },
+        { "name": "Cave Troll",    "special": "shockwave!" },
+        { "name": "Shadow Wraith", "special": "drains life!" },
+        { "name": "Basilisk",      "special": "petrifies! DEF-2 2 turns" }
+      ],
+      "ruins": [
+        { "name": "Skeleton Knight", "special": null },
+        { "name": "Cursed Mage",     "special": "Arcane Burst!" },
+        { "name": "Lich",            "special": "reanimates! +15 HP" },
+        { "name": "Death Knight",    "special": "Soul Rend! Ignores DEF" },
+        { "name": "BOSS: The Dread Knight",
+          "isBoss": true,
+          "special": "Death Cleave!",
+          "phases": [
+            "Dread Knight — Berserker Rage! ATK rises.",
+            "Dread Knight — Death Shroud! DEF rises."
+          ]
+        },
+        { "name": "BOSS: Archlich Mortavian",
+          "isBoss": true,
+          "special": "Soul Shatter!",
+          "phases": [
+            "Mortavian ascends! All specials more frequent.",
+            "Mortavian — Void Rift! ATK surges."
+          ]
+        }
+      ]
+    }
+  }
+}
