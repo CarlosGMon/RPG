@@ -1,291 +1,490 @@
 
 <style>
-:root{--rpg-gold:#BA7517;--rpg-gold-light:#FAC775;--rpg-red:#A32D2D;--rpg-green:#3B6D11;--rpg-purple:#534AB7;--rpg-boss:#854F0B}
-*{box-sizing:border-box}
-#rpg{font-family:var(--font-mono);color:var(--color-text-primary);max-width:680px;margin:0 auto;padding:1rem 0}
-#screen-select{display:flex;flex-direction:column;align-items:center;gap:1.5rem;padding:2rem 1rem}
-.title-hero{text-align:center}
-.title-hero h1{font-size:28px;font-weight:500;margin:0 0 4px;letter-spacing:.04em}
-.title-hero p{font-size:13px;color:var(--color-text-secondary);margin:0}
-.diff-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;max-width:520px}
-.diff-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1rem;cursor:pointer;transition:border-color .15s,background .15s;text-align:left}
-.diff-card:hover{background:var(--color-background-secondary)}
-.diff-card.easy{border-top:3px solid #3B6D11}
-.diff-card.balanced{border-top:3px solid #534AB7}
-.diff-card.hard{border-top:3px solid #A32D2D}
-.diff-card.easy:hover{border-color:#3B6D11}
-.diff-card.balanced:hover{border-color:#534AB7}
-.diff-card.hard:hover{border-color:#A32D2D}
-.diff-label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-.diff-label.easy{color:#3B6D11}.diff-label.balanced{color:#534AB7}.diff-label.hard{color:#A32D2D}
-.diff-name{font-size:16px;font-weight:500;margin:0 0 6px}
-.diff-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.6;margin:0}
-.diff-stats{display:flex;flex-direction:column;gap:3px;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary)}
-.diff-stat{font-size:11px;color:var(--color-text-secondary)}
-#game{display:none}
-#game-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)}
-.game-title{font-size:13px;font-weight:500;color:var(--color-text-secondary)}
-.diff-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.05em}
-.diff-badge.easy{background:#EAF3DE;color:#27500A}.diff-badge.balanced{background:#EEEDFE;color:#26215C}.diff-badge.hard{background:#FCEBEB;color:#791F1F}
-#btn-restart{font-size:11px;color:var(--color-text-secondary);background:none;border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:var(--font-mono)}
-#btn-restart:hover{background:var(--color-background-secondary)}
-#location-tag{font-size:11px;color:var(--color-text-secondary);margin-bottom:.6rem;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
-.loc-dot{width:6px;height:6px;border-radius:50%;background:var(--rpg-gold);display:inline-block}
-#log{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:1rem;height:180px;overflow-y:auto;font-size:12.5px;line-height:1.85;margin-bottom:.75rem}
-.log-line{margin:0}
-.em{color:#185FA5;font-weight:500}.dmg{color:#A32D2D}.ok{color:#3B6D11}.muted{color:var(--color-text-secondary)}.boss-line{color:#854F0B;font-weight:500}.ability-line{color:#534AB7;font-weight:500}
-#debuffs{font-size:11px;color:#A32D2D;min-height:14px;margin-bottom:4px}
-#stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:.6rem}
-.stat{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:6px 8px;text-align:center}
-.stat-label{font-size:10px;color:var(--color-text-secondary);margin-bottom:2px;letter-spacing:.04em;text-transform:uppercase}
-.stat-value{font-size:14px;font-weight:500}
-.bar{height:4px;border-radius:2px;background:var(--color-border-tertiary);margin-top:3px;overflow:hidden}
-.bar-fill{height:100%;transition:width .4s;border-radius:2px}
-#xp-row{display:flex;align-items:center;gap:8px;margin-bottom:.6rem}
-#xp-label{font-size:10px;color:var(--color-text-secondary);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
-#xp-bar-wrap{flex:1;height:3px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
-#xp-bar{height:100%;background:#534AB7;transition:width .4s;border-radius:2px}
-#xp-text{font-size:11px;color:var(--color-text-secondary);white-space:nowrap}
-#enemy-block{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:.75rem;font-size:13px;display:none}
-.boss-block{border-color:#BA7517!important;background:#FAEEDA!important}
-#enemy-name{font-weight:500;margin-bottom:5px;display:flex;align-items:center;gap:6px}
-.boss-crown{font-size:14px}
-#enemy-bar-wrap{height:5px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden}
-#enemy-bar{height:100%;background:#A32D2D;transition:width .4s;border-radius:3px}
-#enemy-hp-text{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
-#abilities-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:6px}
-#actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-button.action-btn{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:9px 12px;font-size:12px;cursor:pointer;color:var(--color-text-primary);font-family:var(--font-mono);text-align:left;transition:background .15s,border-color .15s}
-button.action-btn:hover{background:var(--color-background-secondary)}
-button.action-btn:disabled{opacity:.35;cursor:default}
-button.action-btn.full{grid-column:1 / -1}
-.btn-ability{border-color:#AFA9EC!important;color:#3C3489!important}
-.btn-boss{border-color:#EF9F27!important;color:#633806!important}
-.btn-danger{border-color:#F09595!important}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rpg-gold:#BA7517;--rpg-gold-l:#FAC775;--rpg-red:#A32D2D;--rpg-green:#3B6D11;
+  --rpg-purple:#534AB7;--rpg-boss:#854F0B;--rpg-dark:#2C2C2A;
+  --rpg-easy:#3B6D11;--rpg-bal:#534AB7;--rpg-hard:#A32D2D;
+}
+#app{font-family:var(--font-mono,monospace);color:var(--color-text-primary);max-width:700px;margin:0 auto;padding:1rem 0}
+.screen{display:none}
+.screen.active{display:block}
+
+/* SELECT SCREEN */
+#screen-select{text-align:center}
+.game-logo{padding:1.5rem 0 1rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
+.game-logo h1{font-size:22px;font-weight:500;letter-spacing:.06em;color:var(--color-text-primary);margin-bottom:4px}
+.game-logo p{font-size:12px;color:var(--color-text-secondary);letter-spacing:.04em}
+
+/* LANG SELECTOR */
+.lang-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.5rem}
+.lang-row span{font-size:11px;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase}
+.lang-btn{font-size:12px;font-family:var(--font-mono,monospace);background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md,8px);padding:5px 14px;cursor:pointer;color:var(--color-text-secondary);transition:all .15s}
+.lang-btn.active{border-color:var(--rpg-gold);color:var(--rpg-gold);background:var(--color-background-secondary)}
+.lang-btn:hover:not(.active){background:var(--color-background-secondary)}
+
+/* DIFF CARDS */
+.diff-section h2{font-size:11px;color:var(--color-text-secondary);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem}
+.diff-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:1.5rem}
+.diff-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg,12px);padding:1.1rem 1rem;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden}
+.diff-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.diff-card.easy::before{background:var(--rpg-easy)}
+.diff-card.bal::before{background:var(--rpg-bal)}
+.diff-card.hard::before{background:var(--rpg-hard)}
+.diff-card:hover{background:var(--color-background-secondary);transform:translateY(-1px)}
+.diff-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.diff-tag.easy{color:var(--rpg-easy)}.diff-tag.bal{color:var(--rpg-bal)}.diff-tag.hard{color:var(--rpg-hard)}
+.diff-name{font-size:15px;font-weight:500;margin-bottom:5px}
+.diff-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.6}
+.diff-stats{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary);font-size:10px;color:var(--color-text-secondary);line-height:1.8}
+
+/* GAME SCREEN */
+#screen-game{position:relative}
+.g-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem}
+.g-title{font-size:12px;color:var(--color-text-secondary);letter-spacing:.04em}
+.g-badges{display:flex;gap:6px;align-items:center}
+.badge{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;letter-spacing:.05em}
+.badge.easy{background:#EAF3DE;color:#27500A}.badge.bal{background:#EEEDFE;color:#26215C}.badge.hard{background:#FCEBEB;color:#791F1F}
+.badge.lang{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+#btn-back{font-size:11px;color:var(--color-text-secondary);background:none;border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:var(--font-mono,monospace)}
+#btn-back:hover{background:var(--color-background-secondary)}
+
+/* LOCATION */
+.loc-bar{display:flex;align-items:center;gap:7px;margin-bottom:.65rem}
+.loc-dot{width:7px;height:7px;border-radius:50%;background:var(--rpg-gold);flex-shrink:0}
+.loc-name{font-size:11px;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase}
+
+/* LOG */
+#log{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md,8px);padding:.85rem;height:185px;overflow-y:auto;font-size:12px;line-height:1.9;margin-bottom:.65rem;scroll-behavior:smooth}
+.ll{margin:0}
+.em{color:#185FA5;font-weight:500}.dmg{color:#A32D2D}.ok{color:#3B6D11}.mu{color:var(--color-text-secondary)}.bl{color:#854F0B;font-weight:500}.al{color:#534AB7;font-weight:500}
+
+/* DEBUFFS */
+#debuffs{font-size:11px;color:#A32D2D;min-height:14px;margin-bottom:5px;letter-spacing:.03em}
+
+/* STATS BAR */
+#stats-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:.6rem}
+.stat-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md,8px);padding:6px 8px;text-align:center}
+.stat-lbl{font-size:9px;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.stat-val{font-size:14px;font-weight:500}
+.bar-wrap{height:4px;border-radius:2px;background:var(--color-border-tertiary);margin-top:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width .35s}
+
+/* XP ROW */
+.xp-row{display:flex;align-items:center;gap:8px;margin-bottom:.65rem}
+.xp-lbl{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.xp-wrap{flex:1;height:3px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
+.xp-bar{height:100%;background:var(--rpg-purple);border-radius:2px;transition:width .35s}
+.xp-txt{font-size:11px;color:var(--color-text-secondary);white-space:nowrap}
+
+/* ENEMY BLOCK */
+#enemy-block{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md,8px);padding:9px 12px;margin-bottom:.7rem;font-size:13px;display:none}
+#enemy-block.boss{border-color:var(--rpg-gold)!important;background:#FAEEDA!important}
+.enemy-name-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-weight:500}
+.boss-star{color:var(--rpg-gold);font-size:13px}
+.enemy-hp-bar{height:5px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden;margin-bottom:3px}
+.enemy-hp-fill{height:100%;background:#A32D2D;border-radius:3px;transition:width .35s}
+.enemy-hp-txt{font-size:11px;color:var(--color-text-secondary)}
+
+/* ABILITIES */
+#abilities-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:6px;display:none}
+
+/* ACTIONS */
+#actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+
+/* BUTTONS */
+.btn{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md,8px);padding:10px 12px;font-size:12px;cursor:pointer;color:var(--color-text-primary);font-family:var(--font-mono,monospace);text-align:left;transition:background .15s,border-color .15s,transform .1s;line-height:1.4}
+.btn:hover{background:var(--color-background-secondary)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.35;cursor:default;transform:none}
+.btn.full{grid-column:1/-1}
+.btn.ability{border-color:#AFA9EC!important;color:#3C3489!important}
+.btn.boss-btn{border-color:#EF9F27!important;color:#633806!important}
+.btn.danger{border-color:#F09595!important}
+.btn.move{border-left:3px solid var(--rpg-gold)}
+.btn.action{border-left:3px solid var(--rpg-green)}
+.btn.heal{border-left:3px solid #185FA5}
 .cd-badge{font-size:10px;color:var(--color-text-secondary);margin-left:3px}
-#dead-overlay{display:none;text-align:center;padding:1.5rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);margin-top:.5rem}
-.dead-icon{font-size:32px;margin-bottom:.5rem}
-.dead-title{font-size:18px;font-weight:500;color:#A32D2D;margin:0 0 4px}
-.dead-sub{font-size:13px;color:var(--color-text-secondary);margin:0 0 1rem}
+
+/* DEAD OVERLAY */
+#dead-panel{display:none;text-align:center;padding:1.5rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg,12px);border:0.5px solid var(--color-border-tertiary);margin-top:.5rem}
+.dead-icon{font-size:28px;margin-bottom:.5rem}
+.dead-title{font-size:17px;font-weight:500;color:var(--rpg-red);margin-bottom:4px}
+.dead-sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+
+/* DIVIDER */
+.sep-line{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:.5rem 0}
 </style>
 
-<div id="rpg">
-<h2 class="sr-only">RPG — aventura de rol unificada con selección de dificultad</h2>
+<div id="app">
 
-<div id="screen-select">
-  <div class="title-hero">
-    <h1>Chronicles of the Verdant Crossroads</h1>
-    <p>Elige tu destino, héroe. El mundo espera.</p>
+<!-- SELECT SCREEN -->
+<div id="screen-select" class="screen active">
+  <div class="game-logo">
+    <h1 id="logo-title">Chronicles of the Verdant Crossroads</h1>
+    <p id="logo-sub">Choose your fate, hero. The world awaits.</p>
   </div>
-  <div class="diff-grid">
-    <div class="diff-card easy" onclick="startGame('easy')">
-      <div class="diff-label easy">Fácil</div>
-      <div class="diff-name">Sendero del Peregrino</div>
-      <p class="diff-desc">Para quienes quieren explorar la historia sin morir demasiado.</p>
-      <div class="diff-stats">
-        <div class="diff-stat">HP inicial: 30 · ATK: 6 · DEF: 2</div>
-        <div class="diff-stat">Descanso: gratis · Huida: fácil</div>
-        <div class="diff-stat">Subida de nivel: rápida</div>
+
+  <div class="lang-row">
+    <span id="lang-lbl">Language</span>
+    <button class="lang-btn" onclick="setLang('en')">English</button>
+    <button class="lang-btn" onclick="setLang('es')">Español</button>
+    <button class="lang-btn" onclick="setLang('ca')">Català</button>
+  </div>
+
+  <div class="diff-section">
+    <h2 id="diff-lbl">Select difficulty</h2>
+    <div class="diff-grid">
+      <div class="diff-card easy" onclick="startGame('easy')">
+        <div class="diff-tag easy" id="d-easy-tag">Easy</div>
+        <div class="diff-name" id="d-easy-name">Pilgrim's Path</div>
+        <p class="diff-desc" id="d-easy-desc">For those who want to explore the story without dying too much.</p>
+        <div class="diff-stats" id="d-easy-stats">HP: 30 · ATK: 6 · DEF: 2<br>Rest: free · Flee: easier<br>XP: fast levelling</div>
       </div>
-    </div>
-    <div class="diff-card balanced" onclick="startGame('balanced')">
-      <div class="diff-label balanced">Normal</div>
-      <div class="diff-name">Ruta del Aventurero</div>
-      <p class="diff-desc">Curva de dificultad suave. Desafío real sin ser injusto.</p>
-      <div class="diff-stats">
-        <div class="diff-stat">HP inicial: 22 · ATK: 5 · DEF: 1</div>
-        <div class="diff-stat">Descanso: 6g · Enemigos variados</div>
-        <div class="diff-stat">Debuffs + jefes con fases</div>
+      <div class="diff-card bal" onclick="startGame('balanced')">
+        <div class="diff-tag bal" id="d-bal-tag">Normal</div>
+        <div class="diff-name" id="d-bal-name">Adventurer's Route</div>
+        <p class="diff-desc" id="d-bal-desc">Smooth difficulty curve. Real challenge without being unfair.</p>
+        <div class="diff-stats" id="d-bal-stats">HP: 22 · ATK: 5 · DEF: 1<br>Rest: 6g · Varied enemies<br>Debuffs + phased bosses</div>
       </div>
-    </div>
-    <div class="diff-card hard" onclick="startGame('hard')">
-      <div class="diff-label hard">Difícil</div>
-      <div class="diff-name">Camino del Condenado</div>
-      <p class="diff-desc">Sin piedad. Cada decisión importa. La muerte es permanente.</p>
-      <div class="diff-stats">
-        <div class="diff-stat">HP inicial: 22 · ATK: 5 · DEF: 1</div>
-        <div class="diff-stat">Descanso: 6g · Huida penalizada</div>
-        <div class="diff-stat">Enemigos más duros · Sin margen</div>
+      <div class="diff-card hard" onclick="startGame('hard')">
+        <div class="diff-tag hard" id="d-hard-tag">Hard</div>
+        <div class="diff-name" id="d-hard-name">Condemned's Road</div>
+        <p class="diff-desc" id="d-hard-desc">No mercy. Every decision matters. Death is permanent.</p>
+        <div class="diff-stats" id="d-hard-stats">HP: 22 · ATK: 5 · DEF: 1<br>Rest: 6g · Flee penalized<br>Harder enemies · No margin</div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="game">
-  <div id="game-header">
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="game-title">Chronicles of the Verdant Crossroads</span>
-      <span class="diff-badge" id="diff-badge">Normal</span>
+<!-- GAME SCREEN -->
+<div id="screen-game" class="screen">
+  <div class="g-header">
+    <div class="g-title">Chronicles of the Verdant Crossroads</div>
+    <div class="g-badges">
+      <span class="badge lang" id="lang-badge">EN</span>
+      <span class="badge" id="diff-badge">Normal</span>
+      <button id="btn-back" onclick="backToSelect()">← Menu</button>
     </div>
-    <button id="btn-restart" onclick="backToSelect()">Cambiar modo</button>
   </div>
-  <div id="location-tag"><span class="loc-dot"></span><span id="loc-name">The Verdant Crossroads</span></div>
+
+  <div class="loc-bar"><span class="loc-dot"></span><span class="loc-name" id="loc-name">—</span></div>
+
   <div id="log"></div>
   <div id="debuffs"></div>
-  <div id="stats">
-    <div class="stat"><div class="stat-label">HP</div><div class="stat-value" id="s-hp">—</div><div class="bar"><div class="bar-fill" id="hp-bar" style="width:100%;background:#3B6D11"></div></div></div>
-    <div class="stat"><div class="stat-label">ATK</div><div class="stat-value" id="s-atk">—</div></div>
-    <div class="stat"><div class="stat-label">DEF</div><div class="stat-value" id="s-def">—</div></div>
-    <div class="stat"><div class="stat-label">Gold</div><div class="stat-value" id="s-gold">—</div></div>
-    <div class="stat"><div class="stat-label">Nivel</div><div class="stat-value" id="s-level">—</div></div>
+
+  <div id="stats-grid">
+    <div class="stat-box">
+      <div class="stat-lbl" id="lbl-hp">HP</div>
+      <div class="stat-val" id="s-hp">—</div>
+      <div class="bar-wrap"><div class="bar-fill" id="hp-bar" style="width:100%;background:#3B6D11"></div></div>
+    </div>
+    <div class="stat-box"><div class="stat-lbl" id="lbl-atk">ATK</div><div class="stat-val" id="s-atk">—</div></div>
+    <div class="stat-box"><div class="stat-lbl" id="lbl-def">DEF</div><div class="stat-val" id="s-def">—</div></div>
+    <div class="stat-box"><div class="stat-lbl" id="lbl-gold">Gold</div><div class="stat-val" id="s-gold">—</div></div>
+    <div class="stat-box"><div class="stat-lbl" id="lbl-lvl">Level</div><div class="stat-val" id="s-level">—</div></div>
   </div>
-  <div id="xp-row"><span id="xp-label">XP</span><div id="xp-bar-wrap"><div id="xp-bar" style="width:0%"></div></div><span id="xp-text">0/30</span></div>
+
+  <div class="xp-row">
+    <span class="xp-lbl" id="xp-lbl">XP</span>
+    <div class="xp-wrap"><div class="xp-bar" id="xp-bar" style="width:0%"></div></div>
+    <span class="xp-txt" id="xp-txt">0/30</span>
+  </div>
+
   <div id="enemy-block">
-    <div id="enemy-name"><span id="enemy-crown" class="boss-crown" style="display:none"></span><span id="enemy-name-text">Enemy</span><span id="enemy-status" style="font-size:11px;color:var(--color-text-secondary);margin-left:4px"></span></div>
-    <div id="enemy-bar-wrap"><div id="enemy-bar" style="width:100%"></div></div>
-    <div id="enemy-hp-text"></div>
+    <div class="enemy-name-row">
+      <span id="e-star" class="boss-star" style="display:none">★</span>
+      <span id="e-name">Enemy</span>
+      <span id="e-status" style="font-size:11px;color:var(--color-text-secondary);margin-left:4px"></span>
+    </div>
+    <div class="enemy-hp-bar"><div class="enemy-hp-fill" id="e-bar" style="width:100%"></div></div>
+    <div class="enemy-hp-txt" id="e-hp-txt"></div>
   </div>
-  <div id="abilities-row" style="display:none"></div>
+
+  <div id="abilities-row"></div>
   <div id="actions"></div>
-  <div id="dead-overlay">
-    <div class="dead-icon">&#9760;</div>
-    <div class="dead-title">Has caído</div>
-    <div class="dead-sub" id="dead-msg">El mundo te venció esta vez.</div>
-    <button class="action-btn" onclick="restartGame()" style="margin:0 auto;display:block;padding:10px 24px">Volver a intentar</button>
+
+  <div id="dead-panel">
+    <div class="dead-icon">☠</div>
+    <div class="dead-title" id="dead-title">You have fallen</div>
+    <div class="dead-sub" id="dead-sub">The world defeated you this time.</div>
+    <button class="btn" onclick="restartGame()" style="margin:0 auto;display:block;padding:10px 24px" id="dead-btn">Try again</button>
   </div>
 </div>
+
 </div>
 
 <script>
+const T={
+  en:{
+    logoSub:"Choose your fate, hero. The world awaits.",
+    langLbl:"Language",diffLbl:"Select difficulty",
+    dEasyTag:"Easy",dEasyName:"Pilgrim's Path",dEasyDesc:"For those who want to explore the story without dying too much.",dEasyStats:"HP: 30 · ATK: 6 · DEF: 2\nRest: free · Flee: easier\nXP: fast levelling",
+    dBalTag:"Normal",dBalName:"Adventurer's Route",dBalDesc:"Smooth difficulty curve. Real challenge without being unfair.",dBalStats:"HP: 22 · ATK: 5 · DEF: 1\nRest: 6g · Varied enemies\nDebuffs + phased bosses",
+    dHardTag:"Hard",dHardName:"Condemned's Road",dHardDesc:"No mercy. Every decision matters. Death is permanent.",dHardStats:"HP: 22 · ATK: 5 · DEF: 1\nRest: 6g · Flee penalized\nHarder enemies · No margin",
+    lblHp:"HP",lblAtk:"ATK",lblDef:"DEF",lblGold:"Gold",lblLvl:"Level",xpLbl:"XP",
+    menu:"← Menu",
+    badges:{easy:"Easy",balanced:"Normal",hard:"Hard"},badgesLang:{en:"EN",es:"ES",ca:"CA"},
+    locTag:loc=>loc,
+    warnMsg:{easy:"Welcome, brave soul.",balanced:"The curve is smooth — but death still lurks.",hard:"Hard mode. No hand-holding."},
+    warnSub:{easy:"Abilities unlock as you level up. Bosses await in the Ruins.",balanced:"Train on weaker enemies before venturing further.",hard:"Rest costs gold. Fleeing hurts. Enemies hit back hard."},
+    locations:{
+      crossroads:{name:"The Verdant Crossroads",desc:"A mossy stone marker. Two roads. Danger is close.",exits:{forest:"Enter the Dark Forest",cave:"Descend into the Cave",ruins:"Ancient Ruins",town:"Walk to Millhaven"}},
+      forest:{name:"Dark Forest",desc:"Gnarled trees. Wolves and goblins roam.",exits:{crossroads:"Back to Crossroads"}},
+      cave:{name:"Dripping Cave",desc:"Cold stone. Dripping water. Tougher than the forest.",exits:{crossroads:"Back to Crossroads"}},
+      ruins:{name:"Ancient Ruins",desc:"Crumbling towers. Old magic. Veterans only.",exits:{crossroads:"Back to Crossroads"}},
+      town:{name:"Millhaven Town",desc:"Civilization. Rest. The merchant greets you.",exits:{crossroads:"Back to Crossroads"}}
+    },
+    searchEnemies:"⚔ Search for enemies",challengeBoss:"☠ Challenge a Boss",visitMerchant:"Visit merchant",
+    restFree:"Rest (free — full HP)",restCost:c=>`Rest — ${c}g`,
+    cantAffordRest:g=>`Can't afford rest (need ${g}g).`,restedFully:c=>`Rested fully. -${c}g`,restedFree:"Fully rested!",
+    attack:"⚔ Attack",flee:p=>`Run (${p}% fail)`,potion:n=>`Use Potion (${n})`,
+    hitEnemy:(n,d)=>`You hit ${n} for ${d}.`,bossAppears:n=>`★ BOSS: ${n} ★`,enemyAppears:(n,hp)=>`A ${n} appears! HP: ${hp}`,
+    victory:(g,x)=>`Victory! +${g}g +${x} XP`,bossSlain:"★ Boss slain! A legend is born.",
+    stunned:(n,t)=>`${n} is stunned! (${t} left)`,
+    escapedFull:"Escaped!",escapedHit:(n,p)=>`Barely escaped! Hit for ${p} while fleeing.`,fleeFailed:(n,d)=>`Failed to flee! ${n} hits for ${d}.`,
+    noEnemies:"No suitable enemies here at your level.",
+    levelUp:(lvl,hp,atk,ab)=>`✨ Level ${lvl}! Max HP +${hp}, ATK +${atk}`+(ab?` | New: ${ab}`:""),
+    potionHeal:h=>`Potion: +${h} HP`,notEnoughGold:"Not enough gold.",
+    shopLeave:"← Leave shop",
+    deadTitle:"You have fallen",deadSub:{easy:"Even the Pilgrim's Path has its dangers.",balanced:"The world defeated you. Come back stronger.",hard:"No mercy in this world. There never was."},
+    deadBtn:"Try again",restart:l=>`A new hero rises in ${l}.`,
+    shopItems:["Health Potion (+HP)","Iron Sword (+2 ATK)","Tower Shield (+2 DEF)","Max Elixir (full HP)","War Tome (+3 ATK)"],
+    boughtMsg:r=>`Bought: ${r}`,
+    abilities:{slash:"Power Slash",bash:"Shield Bash",flurry:"Flurry",rally:"Rally",execute:"Execute",meteor:"Meteor"},
+    abilityLog:{
+      slash:d=>`Power Slash — ${d} dmg!`,bash:(d)=>`Shield Bash! ${d} dmg, stunned!`,
+      flurry:(n,t)=>`Flurry! ${n} hits for ${t} total!`,rally:h=>`Rally! +${h} HP`,
+      execute:(low,d)=>`Execute ${low?"— LETHAL! ":""}${d} dmg!`,meteor:d=>`METEOR — ${d} damage!!!`
+    },
+    enemyMsgs:{stunSkip:(n,t)=>stunned(n,t)}
+  },
+  es:{
+    logoSub:"Elige tu destino, héroe. El mundo espera.",
+    langLbl:"Idioma",diffLbl:"Selecciona dificultad",
+    dEasyTag:"Fácil",dEasyName:"Sendero del Peregrino",dEasyDesc:"Para quienes quieren explorar la historia sin morir demasiado.",dEasyStats:"HP: 30 · ATK: 6 · DEF: 2\nDescanso: gratis · Huida: fácil\nXP: subida rápida",
+    dBalTag:"Normal",dBalName:"Ruta del Aventurero",dBalDesc:"Curva suave. Desafío real sin ser injusto.",dBalStats:"HP: 22 · ATK: 5 · DEF: 1\nDescanso: 6g · Enemigos variados\nDebuffs + jefes con fases",
+    dHardTag:"Difícil",dHardName:"Camino del Condenado",dHardDesc:"Sin piedad. Cada decisión importa.",dHardStats:"HP: 22 · ATK: 5 · DEF: 1\nDescanso: 6g · Huida penalizada\nEnemigos duros · Sin margen",
+    lblHp:"HP",lblAtk:"ATK",lblDef:"DEF",lblGold:"Oro",lblLvl:"Nivel",xpLbl:"XP",
+    menu:"← Menú",
+    badges:{easy:"Fácil",balanced:"Normal",hard:"Difícil"},badgesLang:{en:"EN",es:"ES",ca:"CA"},
+    warnMsg:{easy:"Bienvenido, valiente alma.",balanced:"La curva es suave, pero la muerte acecha.",hard:"Modo difícil. Sin tutoriales."},
+    warnSub:{easy:"Las habilidades se desbloquean al subir de nivel. Los jefes esperan en las Ruinas.",balanced:"Entrena con enemigos débiles antes de aventurarte más lejos.",hard:"El descanso cuesta oro. Huir duele. Los enemigos golpean fuerte."},
+    locations:{
+      crossroads:{name:"El Cruce Verdeante",desc:"Una marca de piedra musgosa. Dos caminos. Peligro cercano.",exits:{forest:"Entrar al Bosque Oscuro",cave:"Descender a la Cueva",ruins:"Ruinas Antiguas",town:"Caminar a Millhaven"}},
+      forest:{name:"Bosque Oscuro",desc:"Árboles retorcidos. Lobos y goblins merodean.",exits:{crossroads:"Volver al Cruce"}},
+      cave:{name:"Cueva Goteante",desc:"Piedra fría. Más duro que el bosque.",exits:{crossroads:"Volver al Cruce"}},
+      ruins:{name:"Ruinas Antiguas",desc:"Torres en ruinas. Solo para veteranos.",exits:{crossroads:"Volver al Cruce"}},
+      town:{name:"Ciudad de Millhaven",desc:"Civilización. Descanso. El mercader te saluda.",exits:{crossroads:"Volver al Cruce"}}
+    },
+    searchEnemies:"⚔ Buscar enemigos",challengeBoss:"☠ Desafiar un Jefe",visitMerchant:"Visitar mercader",
+    restFree:"Descansar (gratis, HP lleno)",restCost:c=>`Descansar — ${c}g`,
+    cantAffordRest:g=>`No tienes suficiente oro (${g}g necesarios).`,restedFully:c=>`Descansado. -${c}g`,restedFree:"¡Completamente descansado!",
+    attack:"⚔ Atacar",flee:p=>`Huir (${p}% fallo)`,potion:n=>`Usar Poción (${n})`,
+    hitEnemy:(n,d)=>`Golpeas a ${n} por ${d}.`,bossAppears:n=>`★ JEFE: ${n} ★`,enemyAppears:(n,hp)=>`¡Un ${n} aparece! HP: ${hp}`,
+    victory:(g,x)=>`¡Victoria! +${g}g +${x} XP`,bossSlain:"★ ¡Jefe derrotado! Una leyenda nace.",
+    stunned:(n,t)=>`¡${n} está aturdido! (${t} restantes)`,
+    escapedFull:"¡Escapaste!",escapedHit:(n,p)=>`¡Apenas escapaste! Golpeado por ${p} al huir.`,fleeFailed:(n,d)=>`¡Huida fallida! ${n} te golpea por ${d}.`,
+    noEnemies:"No hay enemigos adecuados aquí en tu nivel.",
+    levelUp:(lvl,hp,atk,ab)=>`✨ ¡Nivel ${lvl}! Max HP +${hp}, ATK +${atk}`+(ab?` | ¡Nueva: ${ab}`:""),
+    potionHeal:h=>`Poción: +${h} HP`,notEnoughGold:"No tienes suficiente oro.",
+    shopLeave:"← Salir de la tienda",
+    deadTitle:"Has caído",deadSub:{easy:"Incluso el Sendero del Peregrino tiene sus peligros.",balanced:"El mundo te venció esta vez. Regresa más fuerte.",hard:"Sin piedad en este mundo. Nunca la hubo."},
+    deadBtn:"Volver a intentar",restart:l=>`Un nuevo héroe surge en ${l}.`,
+    shopItems:["Poción de Vida (+HP)","Espada de Hierro (+2 ATK)","Escudo de Torre (+2 DEF)","Elixir Máximo (HP lleno)","Tomo de Guerra (+3 ATK)"],
+    boughtMsg:r=>`Comprado: ${r}`,
+    abilities:{slash:"Tajo Poderoso",bash:"Golpe de Escudo",flurry:"Ráfaga",rally:"Reagruparse",execute:"Ejecutar",meteor:"Meteoro"},
+    abilityLog:{
+      slash:d=>`¡Tajo Poderoso — ${d} daño!`,bash:(d)=>`¡Golpe de Escudo! ${d} daño, ¡aturdido!`,
+      flurry:(n,t)=>`¡Ráfaga! ${n} golpes por ${t} total!`,rally:h=>`¡Reagruparse! +${h} HP`,
+      execute:(low,d)=>`Ejecutar ${low?"— ¡LETAL! ":""}${d} daño!`,meteor:d=>`¡¡¡METEORO — ${d} daño!!!`
+    }
+  },
+  ca:{
+    logoSub:"Tria el teu destí, heroi. El món t'espera.",
+    langLbl:"Idioma",diffLbl:"Selecciona dificultat",
+    dEasyTag:"Fàcil",dEasyName:"Camí del Pelegrí",dEasyDesc:"Per a qui vol explorar la història sense morir massa.",dEasyStats:"HP: 30 · ATK: 6 · DEF: 2\nDescans: gratis · Fugida: fàcil\nXP: pujada ràpida",
+    dBalTag:"Normal",dBalName:"Ruta de l'Aventurer",dBalDesc:"Corba suau. Desafiament real sense ser injust.",dBalStats:"HP: 22 · ATK: 5 · DEF: 1\nDescans: 6g · Enemics variats\nDebuffs + caps amb fases",
+    dHardTag:"Difícil",dHardName:"Camí del Condemnat",dHardDesc:"Sense pietat. Cada decisió importa.",dHardStats:"HP: 22 · ATK: 5 · DEF: 1\nDescans: 6g · Fugida penalitzada\nEnemics durs · Sense marge",
+    lblHp:"HP",lblAtk:"ATK",lblDef:"DEF",lblGold:"Or",lblLvl:"Nivell",xpLbl:"XP",
+    menu:"← Menú",
+    badges:{easy:"Fàcil",balanced:"Normal",hard:"Difícil"},badgesLang:{en:"EN",es:"ES",ca:"CA"},
+    warnMsg:{easy:"Benvingut, ànima valenta.",balanced:"La corba és suau, però la mort vigila.",hard:"Mode difícil. Sense tutorials."},
+    warnSub:{easy:"Les habilitats es desbloquegen en pujar de nivell. Els caps esperen a les Ruïnes.",balanced:"Entrena amb enemics febles abans d'aventurar-te més lluny.",hard:"El descans costa or. Fugir fa mal. Els enemics colpegen fort."},
+    locations:{
+      crossroads:{name:"La Cruïlla Verdant",desc:"Una pedra marcadora. Dos camins. Perill proper.",exits:{forest:"Entrar al Bosc Fosc",cave:"Baixar a la Cova",ruins:"Ruïnes Antigues",town:"Caminar a Millhaven"}},
+      forest:{name:"Bosc Fosc",desc:"Arbres retorts. Llops i goblins ronden.",exits:{crossroads:"Tornar a la Cruïlla"}},
+      cave:{name:"Cova Degotant",desc:"Pedra freda. Més dur que el bosc.",exits:{crossroads:"Tornar a la Cruïlla"}},
+      ruins:{name:"Ruïnes Antigues",desc:"Torres en runes. Només per a veterans.",exits:{crossroads:"Tornar a la Cruïlla"}},
+      town:{name:"Ciutat de Millhaven",desc:"Civilització. Descans. El mercader et saluda.",exits:{crossroads:"Tornar a la Cruïlla"}}
+    },
+    searchEnemies:"⚔ Buscar enemics",challengeBoss:"☠ Desafiar un Cap",visitMerchant:"Visitar mercader",
+    restFree:"Descansar (gratis, HP ple)",restCost:c=>`Descansar — ${c}g`,
+    cantAffordRest:g=>`No tens prou or (${g}g necessaris).`,restedFully:c=>`Descansat. -${c}g`,restedFree:"Completament descansat!",
+    attack:"⚔ Atacar",flee:p=>`Fugir (${p}% fallida)`,potion:n=>`Usar Poció (${n})`,
+    hitEnemy:(n,d)=>`Colpeges ${n} per ${d}.`,bossAppears:n=>`★ CAP: ${n} ★`,enemyAppears:(n,hp)=>`Un ${n} apareix! HP: ${hp}`,
+    victory:(g,x)=>`Victoria! +${g}g +${x} XP`,bossSlain:"★ Cap derrotat! Neix una llegenda.",
+    stunned:(n,t)=>`${n} està atordit! (${t} torns restants)`,
+    escapedFull:"T'has escapat!",escapedHit:(n,p)=>`Gairebé has escapat! Colpejat per ${p} en fugir.`,fleeFailed:(n,d)=>`Fugida fallida! ${n} et colpeja per ${d}.`,
+    noEnemies:"No hi ha enemics adequats aquí al teu nivell.",
+    levelUp:(lvl,hp,atk,ab)=>`✨ Nivell ${lvl}! Max HP +${hp}, ATK +${atk}`+(ab?` | Nova: ${ab}`:""),
+    potionHeal:h=>`Poció: +${h} HP`,notEnoughGold:"No tens prou or.",
+    shopLeave:"← Sortir de la botiga",
+    deadTitle:"Has caigut",deadSub:{easy:"Fins i tot el Camí del Pelegrí té els seus perills.",balanced:"El món t'ha vençut. Torna més fort.",hard:"Sense pietat en aquest món. Mai no n'hi ha hagut."},
+    deadBtn:"Tornar a intentar",restart:l=>`Un nou heroi sorgeix a ${l}.`,
+    shopItems:["Poció de Vida (+HP)","Espasa de Ferro (+2 ATK)","Escut de Torre (+2 DEF)","Elixir Màxim (HP ple)","Tom de Guerra (+3 ATK)"],
+    boughtMsg:r=>`Comprat: ${r}`,
+    abilities:{slash:"Tall Poderós",bash:"Cop d'Escut",flurry:"Ràfega",rally:"Reagrupar-se",execute:"Executar",meteor:"Meteor"},
+    abilityLog:{
+      slash:d=>`Tall Poderós — ${d} dany!`,bash:(d)=>`Cop d'Escut! ${d} dany, atordit!`,
+      flurry:(n,t)=>`Ràfega! ${n} cops per ${t} total!`,rally:h=>`Reagrupar-se! +${h} HP`,
+      execute:(low,d)=>`Executar ${low?"— LETAL! ":""}${d} dany!`,meteor:d=>`METEOR — ${d} dany!!!`
+    }
+  }
+};
+
+let LANG='en';
 let DIFF='balanced';
 let S={};
 
 const CONFIGS={
-  easy:{hp:30,atk:6,def:2,gold:10,xpMult:1,hpPerLevel:8,atkPerLevel:1,restCost:0,fleeFail:0.4,xpBase:30,potionHeal:15,warnMsg:"Bienvenido, valiente alma.",warnSub:"Las habilidades se desbloquean al subir de nivel. Los jefes esperan en las Ruinas."},
-  balanced:{hp:22,atk:5,def:1,gold:5,xpMult:1,hpPerLevel:6,atkPerLevel:1,restCost:6,fleeFail:0.6,xpBase:40,xpExtra:10,potionHeal:18,warnMsg:"La curva es suave, pero la muerte acecha.",warnSub:"Entrena con enemigos débiles antes de aventurarte más lejos."},
-  hard:{hp:22,atk:5,def:1,gold:5,xpMult:1,hpPerLevel:6,atkPerLevel:1,restCost:6,fleeFail:0.6,xpBase:40,xpExtra:10,potionHeal:18,warnMsg:"Modo difícil. Sin tutoriales.",warnSub:"El descanso cuesta oro. Huir duele. Los enemigos golpean fuerte."}
+  easy:{hp:30,atk:6,def:2,gold:10,hpPerLevel:8,atkPerLevel:1,restCost:0,fleeFail:0.4,xpBase:30,xpExtra:0,potionHeal:15},
+  balanced:{hp:22,atk:5,def:1,gold:5,hpPerLevel:6,atkPerLevel:1,restCost:6,fleeFail:0.6,xpBase:40,xpExtra:10,potionHeal:18},
+  hard:{hp:22,atk:5,def:1,gold:5,hpPerLevel:6,atkPerLevel:1,restCost:6,fleeFail:0.6,xpBase:40,xpExtra:10,potionHeal:18}
 };
 
-const DIFF_LABELS={easy:'Fácil',balanced:'Normal',hard:'Difícil'};
-const DIFF_BADGE_CLS={easy:'easy',balanced:'balanced',hard:'hard'};
-
-function xpForLevel(lvl){
-  const c=CONFIGS[DIFF];
-  return c.xpBase*lvl+(c.xpExtra||0);
-}
+function xpForLevel(lvl){const c=CONFIGS[DIFF];return c.xpBase*lvl+(c.xpExtra||0);}
 
 const ABILITIES=[
-  {id:"slash",name:"Tajo Poderoso",desc:"150% ATK",unlockLvl:1,cd:{easy:2,balanced:3,hard:3},
-   use(e){const d=Math.round(S.atk*1.5+rnd(3));e.hp-=d;print("¡Tajo Poderoso — "+d+" daño!","ability-line")}},
-  {id:"bash",name:"Golpe de Escudo",desc:"Aturde + daño",unlockLvl:2,cd:{easy:3,balanced:4,hard:4},
-   use(e){const d=Math.round(S.atk*(DIFF==='easy'?0.6:0.5));e.hp-=d;e.stunTurns=DIFF==='easy'?1:2;print("¡Golpe de Escudo! "+d+" daño, ¡aturdido!","ability-line")}},
-  {id:"flurry",name:"Ráfaga",desc:"Golpes rápidos",unlockLvl:3,cd:{easy:3,balanced:4,hard:4},
-   use(e){const hits=DIFF==='easy'?3:4;let t=0;for(let i=0;i<hits;i++){const d=Math.max(1,S.atk-2+rnd(4));e.hp-=d;t+=d;}print("¡Ráfaga! "+hits+" golpes por "+t+" total!","ability-line")}},
-  {id:"rally",name:"Reagruparse",desc:"Cura % max HP",unlockLvl:4,cd:{easy:4,balanced:5,hard:5},
-   use(){const pct=DIFF==='easy'?0.3:0.25;const h=Math.round(S.maxHp*pct);S.hp=Math.min(S.maxHp,S.hp+h);print("¡Reagruparse! +"+h+" HP","ability-line")}},
-  {id:"execute",name:"Ejecutar",desc:"2x daño si <25% HP",unlockLvl:5,cd:{easy:2,balanced:3,hard:3},
-   use(e){const thr=DIFF==='easy'?0.3:0.25;const low=e.hp/e.maxHp<thr;const mult=DIFF==='easy'?2:(low?2.2:1.1);const d=Math.round(S.atk*mult+rnd(4));e.hp-=d;print("Ejecutar "+(low?"— ¡LETAL! ":"")+d+" daño!","ability-line")}},
-  {id:"meteor",name:"Meteoro",desc:"Golpe masivo",unlockLvl:6,cd:{easy:5,balanced:6,hard:6},
-   use(e){const d=Math.round(S.atk*2.8+rnd(10));e.hp-=d;print("¡¡¡METEORO — "+d+" daño!!!","ability-line")}}
+  {id:"slash",unlockLvl:1,cd:{easy:2,balanced:3,hard:3},
+   use(e){const d=Math.round(S.atk*1.5+rnd(3));e.hp-=d;print(t().abilityLog.slash(d),"al")}},
+  {id:"bash",unlockLvl:2,cd:{easy:3,balanced:4,hard:4},
+   use(e){const d=Math.round(S.atk*(DIFF==='easy'?0.6:0.5));e.hp-=d;e.stunTurns=DIFF==='easy'?1:2;print(t().abilityLog.bash(d),"al")}},
+  {id:"flurry",unlockLvl:3,cd:{easy:3,balanced:4,hard:4},
+   use(e){const hits=DIFF==='easy'?3:4;let tot=0;for(let i=0;i<hits;i++){const d=Math.max(1,S.atk-2+rnd(4));e.hp-=d;tot+=d;}print(t().abilityLog.flurry(hits,tot),"al")}},
+  {id:"rally",unlockLvl:4,cd:{easy:4,balanced:5,hard:5},
+   use(){const pct=DIFF==='easy'?0.3:0.25;const h=Math.round(S.maxHp*pct);S.hp=Math.min(S.maxHp,S.hp+h);print(t().abilityLog.rally(h),"al")}},
+  {id:"execute",unlockLvl:5,cd:{easy:2,balanced:3,hard:3},
+   use(e){const thr=DIFF==='easy'?0.3:0.25;const low=e.hp/e.maxHp<thr;const mult=DIFF==='easy'?2:(low?2.2:1.1);const d=Math.round(S.atk*mult+rnd(4));e.hp-=d;print(t().abilityLog.execute(low,d),"al")}},
+  {id:"meteor",unlockLvl:6,cd:{easy:5,balanced:6,hard:6},
+   use(e){const d=Math.round(S.atk*2.8+rnd(10));e.hp-=d;print(t().abilityLog.meteor(d),"al")}}
 ];
-
-const LOCATIONS={
-  crossroads:{name:"El Cruce Verdeante",desc:"Una marca de piedra musgosa. Dos caminos. Peligro cercano.",exits:{forest:"Entrar al Bosque Oscuro",cave:"Descender a la Cueva",ruins:"Ruinas Antiguas",town:"Caminar a Millhaven"}},
-  forest:{name:"Bosque Oscuro",desc:"Árboles retorcidos. Lobos y goblins merodean.",exits:{crossroads:"Volver al Cruce"}},
-  cave:{name:"Cueva Goteante",desc:"Piedra fría y agua goteando. Más duro que el bosque.",exits:{crossroads:"Volver al Cruce"}},
-  ruins:{name:"Ruinas Antiguas",desc:"Torres en ruinas. Magia antigua. Solo para veteranos.",exits:{crossroads:"Volver al Cruce"}},
-  town:{name:"Ciudad de Millhaven",desc:"Civilización. Descanso. El mercader te saluda.",exits:{crossroads:"Volver al Cruce"}}
-};
 
 const ENEMIES_EASY={
   forest:[
-    {name:"Explorador Goblin",hp:10,maxHp:10,atk:4,def:0,minLvl:1,reward:{gold:5,xp:15}},
-    {name:"Lobo",hp:14,maxHp:14,atk:6,def:0,minLvl:1,reward:{gold:3,xp:20}},
-    {name:"Asaltante Orco",hp:22,maxHp:22,atk:9,def:0,minLvl:2,reward:{gold:9,xp:35}},
-    {name:"Bruja del Bosque",hp:18,maxHp:18,atk:12,def:0,minLvl:3,reward:{gold:14,xp:45},special:{name:"Maldición",chance:.3,msg:"¡te maldice!",dmgMult:1.5}},
+    {name:{en:"Goblin Scout",es:"Explorador Goblin",ca:"Explorador Goblin"},hp:10,maxHp:10,atk:4,def:0,minLvl:1,reward:{gold:5,xp:15}},
+    {name:{en:"Wolf",es:"Lobo",ca:"Llop"},hp:14,maxHp:14,atk:6,def:0,minLvl:1,reward:{gold:3,xp:20}},
+    {name:{en:"Orc Raider",es:"Asaltante Orco",ca:"Assaltant Orc"},hp:22,maxHp:22,atk:9,def:0,minLvl:2,reward:{gold:9,xp:35}},
+    {name:{en:"Forest Witch",es:"Bruja del Bosque",ca:"Bruixa del Bosc"},hp:18,maxHp:18,atk:12,def:0,minLvl:3,reward:{gold:14,xp:45},special:{chance:.3,msg:{en:"casts Hex!",es:"¡te maldice!",ca:"et malda!"},dmgMult:1.5}},
   ],
   cave:[
-    {name:"Murciélago Gigante",hp:8,maxHp:8,atk:3,def:0,minLvl:1,reward:{gold:4,xp:12}},
-    {name:"Gólem de Piedra",hp:22,maxHp:22,atk:8,def:1,minLvl:1,reward:{gold:12,xp:40}},
-    {name:"Trol de Cueva",hp:35,maxHp:35,atk:11,def:1,minLvl:3,reward:{gold:18,xp:55},special:{name:"Aplastamiento",chance:.25,msg:"¡golpe sísmico!",dmgMult:2}},
-    {name:"Espectro Sombra",hp:28,maxHp:28,atk:14,def:0,minLvl:4,reward:{gold:22,xp:65},special:{name:"Drenaje",chance:.35,msg:"¡drena tu vida!",dmgMult:1.3,lifeSteal:true}},
+    {name:{en:"Giant Bat",es:"Murciélago Gigante",ca:"Ratpenat Gegant"},hp:8,maxHp:8,atk:3,def:0,minLvl:1,reward:{gold:4,xp:12}},
+    {name:{en:"Stone Golem",es:"Gólem de Piedra",ca:"Gòlem de Pedra"},hp:22,maxHp:22,atk:8,def:1,minLvl:1,reward:{gold:12,xp:40}},
+    {name:{en:"Cave Troll",es:"Trol de Cueva",ca:"Trol de Cova"},hp:35,maxHp:35,atk:11,def:1,minLvl:3,reward:{gold:18,xp:55},special:{chance:.25,msg:{en:"seismic slam!",es:"¡golpe sísmico!",ca:"cop sísmic!"},dmgMult:2}},
+    {name:{en:"Shadow Wraith",es:"Espectro Sombra",ca:"Espectre Ombra"},hp:28,maxHp:28,atk:14,def:0,minLvl:4,reward:{gold:22,xp:65},special:{chance:.35,msg:{en:"drains your life!",es:"¡drena tu vida!",ca:"drenat la teva vida!"},dmgMult:1.3,lifeSteal:true}},
   ],
   ruins:[
-    {name:"Caballero Esqueleto",hp:30,maxHp:30,atk:10,def:2,minLvl:4,reward:{gold:20,xp:60}},
-    {name:"Mago Maldito",hp:24,maxHp:24,atk:16,def:0,minLvl:4,reward:{gold:25,xp:70},special:{name:"Explosión Arcana",chance:.4,msg:"¡explosión arcana!",dmgMult:1.8}},
-    {name:"Liche",hp:45,maxHp:45,atk:14,def:1,minLvl:5,reward:{gold:35,xp:90},special:{name:"Reanimarse",chance:.2,msg:"¡se reanima! +10 HP.",heal:10}},
-    {isBoss:true,name:"JEFE: El Caballero Temido",hp:80,maxHp:80,atk:18,def:3,minLvl:5,reward:{gold:80,xp:200},special:{name:"Tajo Mortal",chance:.4,msg:"¡golpe demoledor!",dmgMult:2.2}},
-    {isBoss:true,name:"JEFE: Archliche Mortavian",hp:100,maxHp:100,atk:22,def:2,minLvl:6,reward:{gold:120,xp:300},special:{name:"Fragmentar Alma",chance:.5,msg:"¡fragmenta tu alma!",dmgMult:2,lifeSteal:true}},
+    {name:{en:"Skeleton Knight",es:"Caballero Esqueleto",ca:"Cavaller Esquelet"},hp:30,maxHp:30,atk:10,def:2,minLvl:4,reward:{gold:20,xp:60}},
+    {name:{en:"Cursed Mage",es:"Mago Maldito",ca:"Mag Maleït"},hp:24,maxHp:24,atk:16,def:0,minLvl:4,reward:{gold:25,xp:70},special:{chance:.4,msg:{en:"Arcane Burst!",es:"¡explosión arcana!",ca:"Esclat Arcà!"},dmgMult:1.8}},
+    {name:{en:"Lich",es:"Liche",ca:"Lig"},hp:45,maxHp:45,atk:14,def:1,minLvl:5,reward:{gold:35,xp:90},special:{chance:.2,msg:{en:"reanimates! +10 HP",es:"¡se reanima! +10 HP",ca:"es reanima! +10 HP"},heal:10}},
+    {isBoss:true,name:{en:"BOSS: The Dread Knight",es:"JEFE: El Caballero Temido",ca:"CAP: El Cavaller Temut"},hp:80,maxHp:80,atk:18,def:3,minLvl:5,reward:{gold:80,xp:200},special:{chance:.4,msg:{en:"Death Cleave — massive blow!",es:"¡golpe demoledor!",ca:"Tall Mortal — cop demolidor!"},dmgMult:2.2}},
+    {isBoss:true,name:{en:"BOSS: Archlich Mortavian",es:"JEFE: Archliche Mortavian",ca:"CAP: Arxilig Mortavian"},hp:100,maxHp:100,atk:22,def:2,minLvl:6,reward:{gold:120,xp:300},special:{chance:.5,msg:{en:"Soul Shatter!",es:"¡fragmenta tu alma!",ca:"Trencament d'ànima!"},dmgMult:2,lifeSteal:true}},
   ]
 };
 
 const ENEMIES_NORMAL={
   forest:[
-    {name:"Explorador Goblin",hp:10,maxHp:10,atk:5,def:0,minLvl:1,maxLvl:3,weight:4,reward:{gold:4,xp:12}},
-    {name:"Lobo Salvaje",hp:14,maxHp:14,atk:7,def:0,minLvl:1,maxLvl:4,weight:3,reward:{gold:5,xp:16}},
-    {name:"Bandido",hp:18,maxHp:18,atk:8,def:1,minLvl:2,maxLvl:5,weight:3,reward:{gold:8,xp:24},special:{name:"Golpe Sucio",chance:.25,msg:"¡te golpea a traición!",dmgMult:1.5}},
-    {name:"Asaltante Orco",hp:28,maxHp:28,atk:11,def:2,minLvl:3,weight:2,reward:{gold:10,xp:34},special:{name:"Furia",chance:.3,msg:"¡entra en furia!",dmgMult:2.0}},
-    {name:"Bruja del Bosque",hp:24,maxHp:24,atk:14,def:0,minLvl:4,weight:2,reward:{gold:14,xp:46},special:{name:"Maldición",chance:.4,msg:"¡te maldice! ATK-2 2 turnos.",debuff:{stat:"atk",amt:2,turns:2}}},
-    {name:"Hidra del Bosque",hp:50,maxHp:50,atk:13,def:3,minLvl:5,weight:1,reward:{gold:22,xp:66},special:{name:"Regenerar",chance:.3,msg:"¡se regenera! +8 HP.",heal:8}},
+    {name:{en:"Goblin Scout",es:"Explorador Goblin",ca:"Explorador Goblin"},hp:10,maxHp:10,atk:5,def:0,minLvl:1,maxLvl:3,weight:4,reward:{gold:4,xp:12}},
+    {name:{en:"Wild Wolf",es:"Lobo Salvaje",ca:"Llop Salvatge"},hp:14,maxHp:14,atk:7,def:0,minLvl:1,maxLvl:4,weight:3,reward:{gold:5,xp:16}},
+    {name:{en:"Bandit",es:"Bandido",ca:"Bandoler"},hp:18,maxHp:18,atk:8,def:1,minLvl:2,maxLvl:5,weight:3,reward:{gold:8,xp:24},special:{chance:.25,msg:{en:"cheap shots you!",es:"¡te golpea a traición!",ca:"et cop traïdorament!"},dmgMult:1.5}},
+    {name:{en:"Orc Raider",es:"Asaltante Orco",ca:"Assaltant Orc"},hp:28,maxHp:28,atk:11,def:2,minLvl:3,weight:2,reward:{gold:10,xp:34},special:{chance:.3,msg:{en:"rages!",es:"¡entra en furia!",ca:"entra en fúria!"},dmgMult:2.0}},
+    {name:{en:"Forest Witch",es:"Bruja del Bosque",ca:"Bruixa del Bosc"},hp:24,maxHp:24,atk:14,def:0,minLvl:4,weight:2,reward:{gold:14,xp:46},special:{chance:.4,msg:{en:"hexes you! ATK-2 2 turns",es:"¡te maldice! ATK-2 2 turnos",ca:"et malda! ATK-2 2 torns"},debuff:{stat:"atk",amt:2,turns:2}}},
+    {name:{en:"Forest Hydra",es:"Hidra del Bosque",ca:"Hidra del Bosc"},hp:50,maxHp:50,atk:13,def:3,minLvl:5,weight:1,reward:{gold:22,xp:66},special:{chance:.3,msg:{en:"regenerates! +8 HP",es:"¡se regenera! +8 HP",ca:"es regenera! +8 HP"},heal:8}},
   ],
   cave:[
-    {name:"Murciélago Gigante",hp:10,maxHp:10,atk:5,def:0,minLvl:1,maxLvl:3,weight:4,reward:{gold:3,xp:10}},
-    {name:"Enjambre de Ratas",hp:14,maxHp:14,atk:6,def:0,minLvl:1,maxLvl:3,weight:3,reward:{gold:4,xp:14}},
-    {name:"Gólem de Piedra",hp:28,maxHp:28,atk:9,def:3,minLvl:2,maxLvl:5,weight:3,reward:{gold:12,xp:36},special:{name:"Aplastamiento",chance:.28,msg:"¡te aplasta!",dmgMult:1.7}},
-    {name:"Trol de Cueva",hp:40,maxHp:40,atk:13,def:2,minLvl:3,weight:2,reward:{gold:18,xp:56},special:{name:"Golpe",chance:.3,msg:"¡golpe al suelo!",dmgMult:2.0}},
-    {name:"Espectro Sombra",hp:36,maxHp:36,atk:16,def:1,minLvl:4,weight:2,reward:{gold:24,xp:68},special:{name:"Drenaje",chance:.38,msg:"¡drena tu vida!",dmgMult:1.4,lifeSteal:true}},
-    {name:"Basilisco",hp:55,maxHp:55,atk:16,def:3,minLvl:5,weight:1,reward:{gold:30,xp:82},special:{name:"Petrificar",chance:.28,msg:"¡te petrifica! DEF-2 2 turnos.",debuff:{stat:"def",amt:2,turns:2}}},
+    {name:{en:"Giant Bat",es:"Murciélago Gigante",ca:"Ratpenat Gegant"},hp:10,maxHp:10,atk:5,def:0,minLvl:1,maxLvl:3,weight:4,reward:{gold:3,xp:10}},
+    {name:{en:"Cave Rat Swarm",es:"Enjambre de Ratas",ca:"Eixam de Rates"},hp:14,maxHp:14,atk:6,def:0,minLvl:1,maxLvl:3,weight:3,reward:{gold:4,xp:14}},
+    {name:{en:"Stone Golem",es:"Gólem de Piedra",ca:"Gòlem de Pedra"},hp:28,maxHp:28,atk:9,def:3,minLvl:2,maxLvl:5,weight:3,reward:{gold:12,xp:36},special:{chance:.28,msg:{en:"crushes you!",es:"¡te aplasta!",ca:"t'aixafa!"},dmgMult:1.7}},
+    {name:{en:"Cave Troll",es:"Trol de Cueva",ca:"Trol de Cova"},hp:40,maxHp:40,atk:13,def:2,minLvl:3,weight:2,reward:{gold:18,xp:56},special:{chance:.3,msg:{en:"ground smash!",es:"¡golpe al suelo!",ca:"cop a terra!"},dmgMult:2.0}},
+    {name:{en:"Shadow Wraith",es:"Espectro Sombra",ca:"Espectre Ombra"},hp:36,maxHp:36,atk:16,def:1,minLvl:4,weight:2,reward:{gold:24,xp:68},special:{chance:.38,msg:{en:"drains your life!",es:"¡drena tu vida!",ca:"drenat la teva vida!"},dmgMult:1.4,lifeSteal:true}},
+    {name:{en:"Basilisk",es:"Basilisco",ca:"Basilisc"},hp:55,maxHp:55,atk:16,def:3,minLvl:5,weight:1,reward:{gold:30,xp:82},special:{chance:.28,msg:{en:"petrifies! DEF-2 2 turns",es:"¡te petrifica! DEF-2 2 turnos",ca:"et petrifica! DEF-2 2 torns"},debuff:{stat:"def",amt:2,turns:2}}},
   ],
   ruins:[
-    {name:"Caballero Esqueleto",hp:38,maxHp:38,atk:12,def:3,minLvl:5,maxLvl:6,weight:3,reward:{gold:20,xp:58}},
-    {name:"Mago Maldito",hp:30,maxHp:30,atk:19,def:0,minLvl:5,weight:2,reward:{gold:25,xp:70},special:{name:"Explosión Arcana",chance:.4,msg:"¡Explosión Arcana!",dmgMult:2.0}},
-    {name:"Liche",hp:55,maxHp:55,atk:17,def:2,minLvl:5,weight:2,reward:{gold:36,xp:90},special:{name:"Reanimarse",chance:.25,msg:"¡se reanima! +15 HP.",heal:15}},
-    {name:"Caballero de la Muerte",hp:65,maxHp:65,atk:19,def:4,minLvl:6,weight:2,reward:{gold:42,xp:102},special:{name:"Desgarrar Alma",chance:.35,msg:"¡Desgarrar Alma — ignora DEF!",dmgMult:1.6,ignoresDef:true}},
-    {isBoss:true,name:"JEFE: El Caballero Temido",hp:95,maxHp:95,atk:22,def:5,minLvl:5,weight:1,reward:{gold:85,xp:220},phases:[{threshold:.6,msg:"¡El Caballero Temido — Furia Berserker! ATK +6.",atkBoost:6},{threshold:.3,msg:"¡El Caballero Temido — Sudario de Muerte! DEF +5.",defBoost:5}],special:{name:"Tajo Mortal",chance:.4,msg:"¡Tajo Mortal!",dmgMult:2.5}},
-    {isBoss:true,name:"JEFE: Archliche Mortavian",hp:130,maxHp:130,atk:26,def:3,minLvl:6,weight:1,reward:{gold:130,xp:350},phases:[{threshold:.7,msg:"¡Mortavian asciende — Forma Liche!",specialBoost:.2},{threshold:.4,msg:"¡Mortavian — Fisura del Vacío! ATK +8.",atkBoost:8}],special:{name:"Fragmentar Alma",chance:.45,msg:"¡Fragmentar Alma!",dmgMult:2.2,lifeSteal:true}},
+    {name:{en:"Skeleton Knight",es:"Caballero Esqueleto",ca:"Cavaller Esquelet"},hp:38,maxHp:38,atk:12,def:3,minLvl:5,maxLvl:6,weight:3,reward:{gold:20,xp:58}},
+    {name:{en:"Cursed Mage",es:"Mago Maldito",ca:"Mag Maleït"},hp:30,maxHp:30,atk:19,def:0,minLvl:5,weight:2,reward:{gold:25,xp:70},special:{chance:.4,msg:{en:"Arcane Burst!",es:"¡Explosión Arcana!",ca:"Esclat Arcà!"},dmgMult:2.0}},
+    {name:{en:"Lich",es:"Liche",ca:"Lig"},hp:55,maxHp:55,atk:17,def:2,minLvl:5,weight:2,reward:{gold:36,xp:90},special:{chance:.25,msg:{en:"reanimates! +15 HP",es:"¡se reanima! +15 HP",ca:"es reanima! +15 HP"},heal:15}},
+    {name:{en:"Death Knight",es:"Caballero de la Muerte",ca:"Cavaller de la Mort"},hp:65,maxHp:65,atk:19,def:4,minLvl:6,weight:2,reward:{gold:42,xp:102},special:{chance:.35,msg:{en:"Soul Rend — ignores DEF!",es:"¡Desgarrar Alma — ignora DEF!",ca:"Ànima Esberlada — ignora DEF!"},dmgMult:1.6,ignoresDef:true}},
+    {isBoss:true,name:{en:"BOSS: The Dread Knight",es:"JEFE: El Caballero Temido",ca:"CAP: El Cavaller Temut"},hp:95,maxHp:95,atk:22,def:5,minLvl:5,weight:1,reward:{gold:85,xp:220},
+     phases:[{threshold:.6,msg:{en:"Dread Knight — Berserker Rage! ATK +6",es:"¡El Caballero Temido — Furia Berserker! ATK +6",ca:"El Cavaller Temut — Fúria Berserker! ATK +6"},atkBoost:6},{threshold:.3,msg:{en:"Dread Knight — Death Shroud! DEF +5",es:"¡El Caballero Temido — Sudario de Muerte! DEF +5",ca:"El Cavaller Temut — Sudari Mortal! DEF +5"},defBoost:5}],
+     special:{chance:.4,msg:{en:"Death Cleave!",es:"¡Tajo Mortal!",ca:"Tall Mortal!"},dmgMult:2.5}},
+    {isBoss:true,name:{en:"BOSS: Archlich Mortavian",es:"JEFE: Archliche Mortavian",ca:"CAP: Arxilig Mortavian"},hp:130,maxHp:130,atk:26,def:3,minLvl:6,weight:1,reward:{gold:130,xp:350},
+     phases:[{threshold:.7,msg:{en:"Mortavian ascends — Lich Form! Specials more frequent.",es:"¡Mortavian asciende — Forma Liche!",ca:"Mortavian ascendeix — Forma Lig!"},specialBoost:.2},{threshold:.4,msg:{en:"Mortavian — Void Rift! ATK +8",es:"¡Mortavian — Fisura del Vacío! ATK +8",ca:"Mortavian — Escletxa del Buit! ATK +8"},atkBoost:8}],
+     special:{chance:.45,msg:{en:"Soul Shatter!",es:"¡Fragmentar Alma!",ca:"Trencament d'ànima!"},dmgMult:2.2,lifeSteal:true}},
   ]
 };
 
 const ENEMIES_HARD={
   forest:[
-    {name:"Explorador Goblin",hp:12,maxHp:12,atk:6,def:0,minLvl:1,reward:{gold:4,xp:12}},
-    {name:"Lobo Rabioso",hp:18,maxHp:18,atk:9,def:1,minLvl:1,reward:{gold:5,xp:18},special:{name:"Embestida",chance:.35,msg:"¡te embiste!",dmgMult:1.8}},
-    {name:"Asaltante Orco",hp:28,maxHp:28,atk:12,def:2,minLvl:2,reward:{gold:10,xp:32},special:{name:"Furia",chance:.3,msg:"¡entra en furia!",dmgMult:2.0}},
-    {name:"Bruja del Bosque",hp:22,maxHp:22,atk:15,def:0,minLvl:3,reward:{gold:14,xp:45},special:{name:"Maldición",chance:.4,msg:"¡te maldice! ATK-2 2 turnos.",debuff:{stat:"atk",amt:2,turns:2}}},
-    {name:"Hidra del Bosque",hp:50,maxHp:50,atk:13,def:3,minLvl:4,reward:{gold:22,xp:65},special:{name:"Regenerar",chance:.3,msg:"¡se regenera! +8 HP.",heal:8}},
+    {name:{en:"Goblin Scout",es:"Explorador Goblin",ca:"Explorador Goblin"},hp:12,maxHp:12,atk:6,def:0,minLvl:1,reward:{gold:4,xp:12}},
+    {name:{en:"Rabid Wolf",es:"Lobo Rabioso",ca:"Llop Rabiós"},hp:18,maxHp:18,atk:9,def:1,minLvl:1,reward:{gold:5,xp:18},special:{chance:.35,msg:{en:"lunges at you!",es:"¡te embiste!",ca:"et embesteix!"},dmgMult:1.8}},
+    {name:{en:"Orc Raider",es:"Asaltante Orco",ca:"Assaltant Orc"},hp:28,maxHp:28,atk:12,def:2,minLvl:2,reward:{gold:10,xp:32},special:{chance:.3,msg:{en:"rages!",es:"¡entra en furia!",ca:"entra en fúria!"},dmgMult:2.0}},
+    {name:{en:"Forest Witch",es:"Bruja del Bosque",ca:"Bruixa del Bosc"},hp:22,maxHp:22,atk:15,def:0,minLvl:3,reward:{gold:14,xp:45},special:{chance:.4,msg:{en:"hexes! ATK-2 2 turns",es:"¡maldice! ATK-2 2 turnos",ca:"malda! ATK-2 2 torns"},debuff:{stat:"atk",amt:2,turns:2}}},
+    {name:{en:"Forest Hydra",es:"Hidra del Bosque",ca:"Hidra del Bosc"},hp:50,maxHp:50,atk:13,def:3,minLvl:4,reward:{gold:22,xp:65},special:{chance:.3,msg:{en:"regenerates! +8 HP",es:"¡se regenera! +8 HP",ca:"es regenera! +8 HP"},heal:8}},
   ],
   cave:[
-    {name:"Murciélago Gigante",hp:10,maxHp:10,atk:5,def:0,minLvl:1,reward:{gold:3,xp:10}},
-    {name:"Gólem de Piedra",hp:30,maxHp:30,atk:10,def:4,minLvl:1,reward:{gold:12,xp:38},special:{name:"Aplastamiento",chance:.3,msg:"¡te aplasta!",dmgMult:1.7}},
-    {name:"Trol de Cueva",hp:42,maxHp:42,atk:14,def:2,minLvl:3,reward:{gold:18,xp:55},special:{name:"Golpe Sísmico",chance:.35,msg:"¡onda de choque!",dmgMult:2.2}},
-    {name:"Espectro Sombra",hp:35,maxHp:35,atk:17,def:1,minLvl:4,reward:{gold:24,xp:68},special:{name:"Drenaje",chance:.4,msg:"¡drena tu fuerza vital!",dmgMult:1.4,lifeSteal:true}},
-    {name:"Basilisco",hp:55,maxHp:55,atk:16,def:3,minLvl:5,reward:{gold:30,xp:80},special:{name:"Petrificar",chance:.3,msg:"¡te petrifica! DEF-2 2 turnos.",debuff:{stat:"def",amt:2,turns:2}}},
+    {name:{en:"Giant Bat",es:"Murciélago Gigante",ca:"Ratpenat Gegant"},hp:10,maxHp:10,atk:5,def:0,minLvl:1,reward:{gold:3,xp:10}},
+    {name:{en:"Stone Golem",es:"Gólem de Piedra",ca:"Gòlem de Pedra"},hp:30,maxHp:30,atk:10,def:4,minLvl:1,reward:{gold:12,xp:38},special:{chance:.3,msg:{en:"crushes you!",es:"¡te aplasta!",ca:"t'aixafa!"},dmgMult:1.7}},
+    {name:{en:"Cave Troll",es:"Trol de Cueva",ca:"Trol de Cova"},hp:42,maxHp:42,atk:14,def:2,minLvl:3,reward:{gold:18,xp:55},special:{chance:.35,msg:{en:"shockwave!",es:"¡onda de choque!",ca:"ona de xoc!"},dmgMult:2.2}},
+    {name:{en:"Shadow Wraith",es:"Espectro Sombra",ca:"Espectre Ombra"},hp:35,maxHp:35,atk:17,def:1,minLvl:4,reward:{gold:24,xp:68},special:{chance:.4,msg:{en:"drains life!",es:"¡drena tu fuerza vital!",ca:"drenat la força vital!"},dmgMult:1.4,lifeSteal:true}},
+    {name:{en:"Basilisk",es:"Basilisco",ca:"Basilisc"},hp:55,maxHp:55,atk:16,def:3,minLvl:5,reward:{gold:30,xp:80},special:{chance:.3,msg:{en:"petrifies! DEF-2 2 turns",es:"¡te petrifica! DEF-2 2 turnos",ca:"et petrifica! DEF-2 2 torns"},debuff:{stat:"def",amt:2,turns:2}}},
   ],
   ruins:[
-    {name:"Caballero Esqueleto",hp:38,maxHp:38,atk:12,def:3,minLvl:4,reward:{gold:20,xp:58}},
-    {name:"Mago Maldito",hp:30,maxHp:30,atk:20,def:0,minLvl:4,reward:{gold:25,xp:68},special:{name:"Explosión Arcana",chance:.45,msg:"¡Explosión Arcana!",dmgMult:2.0}},
-    {name:"Liche",hp:55,maxHp:55,atk:17,def:2,minLvl:5,reward:{gold:36,xp:90},special:{name:"Reanimarse",chance:.25,msg:"¡se reanima! +15 HP.",heal:15}},
-    {name:"Caballero de la Muerte",hp:65,maxHp:65,atk:19,def:4,minLvl:5,reward:{gold:42,xp:100},special:{name:"Desgarrar Alma",chance:.35,msg:"¡Desgarrar Alma! Ignora DEF.",dmgMult:1.6,ignoresDef:true}},
-    {isBoss:true,name:"JEFE: El Caballero Temido",hp:95,maxHp:95,atk:22,def:5,minLvl:5,reward:{gold:85,xp:220},phases:[{threshold:.6,msg:"¡El Caballero Temido — Furia Berserker! ATK sube.",atkBoost:6},{threshold:.3,msg:"¡El Caballero Temido — Sudario de Muerte! DEF sube.",defBoost:5}],special:{name:"Tajo Mortal",chance:.45,msg:"¡Tajo Mortal — golpe devastador!",dmgMult:2.5}},
-    {isBoss:true,name:"JEFE: Archliche Mortavian",hp:130,maxHp:130,atk:26,def:3,minLvl:6,reward:{gold:130,xp:350},phases:[{threshold:.7,msg:"¡Mortavian asciende! ¡Todos los especiales más frecuentes!",specialBoost:.2},{threshold:.4,msg:"¡Mortavian rompe el cielo — Fisura del Vacío! ATK se dispara.",atkBoost:8}],special:{name:"Fragmentar Alma",chance:.5,msg:"¡Fragmentar Alma — vida drenada!",dmgMult:2.2,lifeSteal:true}},
+    {name:{en:"Skeleton Knight",es:"Caballero Esqueleto",ca:"Cavaller Esquelet"},hp:38,maxHp:38,atk:12,def:3,minLvl:4,reward:{gold:20,xp:58}},
+    {name:{en:"Cursed Mage",es:"Mago Maldito",ca:"Mag Maleït"},hp:30,maxHp:30,atk:20,def:0,minLvl:4,reward:{gold:25,xp:68},special:{chance:.45,msg:{en:"Arcane Burst!",es:"¡Explosión Arcana!",ca:"Esclat Arcà!"},dmgMult:2.0}},
+    {name:{en:"Lich",es:"Liche",ca:"Lig"},hp:55,maxHp:55,atk:17,def:2,minLvl:5,reward:{gold:36,xp:90},special:{chance:.25,msg:{en:"reanimates! +15 HP",es:"¡se reanima! +15 HP",ca:"es reanima! +15 HP"},heal:15}},
+    {name:{en:"Death Knight",es:"Caballero de la Muerte",ca:"Cavaller de la Mort"},hp:65,maxHp:65,atk:19,def:4,minLvl:5,reward:{gold:42,xp:100},special:{chance:.35,msg:{en:"Soul Rend! Ignores DEF",es:"¡Desgarrar Alma! Ignora DEF",ca:"Ànima Esberlada! Ignora DEF"},dmgMult:1.6,ignoresDef:true}},
+    {isBoss:true,name:{en:"BOSS: The Dread Knight",es:"JEFE: El Caballero Temido",ca:"CAP: El Cavaller Temut"},hp:95,maxHp:95,atk:22,def:5,minLvl:5,reward:{gold:85,xp:220},
+     phases:[{threshold:.6,msg:{en:"Dread Knight — Berserker Rage! ATK rises.",es:"¡El Caballero Temido — Furia Berserker! ATK sube.",ca:"El Cavaller Temut — Fúria Berserker! ATK puja."},atkBoost:6},{threshold:.3,msg:{en:"Dread Knight — Death Shroud! DEF rises.",es:"¡El Caballero Temido — Sudario de Muerte! DEF sube.",ca:"El Cavaller Temut — Sudari Mortal! DEF puja."},defBoost:5}],
+     special:{chance:.45,msg:{en:"Death Cleave!",es:"¡Tajo Mortal!",ca:"Tall Mortal!"},dmgMult:2.5}},
+    {isBoss:true,name:{en:"BOSS: Archlich Mortavian",es:"JEFE: Archliche Mortavian",ca:"CAP: Arxilig Mortavian"},hp:130,maxHp:130,atk:26,def:3,minLvl:6,reward:{gold:130,xp:350},
+     phases:[{threshold:.7,msg:{en:"Mortavian ascends! All specials more frequent.",es:"¡Mortavian asciende! Todos los especiales más frecuentes.",ca:"Mortavian ascendeix! Tots els especials més freqüents."},specialBoost:.2},{threshold:.4,msg:{en:"Mortavian — Void Rift! ATK surges.",es:"¡Mortavian — Fisura del Vacío! ATK se dispara.",ca:"Mortavian — Escletxa del Buit! ATK s'accelera."},atkBoost:8}],
+     special:{chance:.5,msg:{en:"Soul Shatter!",es:"¡Fragmentar Alma!",ca:"Trencament d'ànima!"},dmgMult:2.2,lifeSteal:true}},
   ]
 };
 
-const SHOP_ITEMS=[
-  {name:"Poción de Vida (+HP)",cost:{easy:8,balanced:10,hard:10},fn(){S.inventory.push("potion");return"Poción añadida"}},
-  {name:"Espada de Hierro (+2 ATK)",cost:{easy:15,balanced:18,hard:18},fn(){S.atk+=2;return"ATK +2"}},
-  {name:"Escudo de Torre (+2 DEF)",cost:{easy:12,balanced:16,hard:16},fn(){S.def+=2;return"DEF +2"}},
-  {name:"Elixir Máximo (HP lleno)",cost:{easy:25,balanced:30,hard:30},fn(){const h=S.maxHp-S.hp;S.hp=S.maxHp;return"+"+h+" HP"}},
-  {name:"Tomo de Guerra (+3 ATK)",cost:{easy:28,balanced:35,hard:35},fn(){S.atk+=3;return"ATK +3"}},
+const SHOP_BASE=[
+  {fn(){S.inventory.push("potion");return t().shopItems[0]}},
+  {fn(){S.atk+=2;return t().shopItems[1]}},
+  {fn(){S.def+=2;return t().shopItems[2]}},
+  {fn(){const h=S.maxHp-S.hp;S.hp=S.maxHp;return t().shopItems[3]}},
+  {fn(){S.atk+=3;return t().shopItems[4]}},
 ];
+const SHOP_COSTS={easy:[8,15,12,25,28],balanced:[10,18,16,30,35],hard:[10,18,16,30,35]};
 
+function t(){return T[LANG];}
+function ename(e){return e.name[LANG]||e.name.en;}
+function emsg(sp){return sp.msg[LANG]||sp.msg.en;}
+function locs(){return t().locations;}
 function getEnemies(){return DIFF==='easy'?ENEMIES_EASY:DIFF==='balanced'?ENEMIES_NORMAL:ENEMIES_HARD;}
 function rnd(n){return Math.floor(Math.random()*n);}
 function pickEnemy(pool){
   if(DIFF==='easy')return pool[rnd(pool.length)];
-  const total=pool.reduce((s,e)=>s+(e.weight||1),0);
-  let r=Math.random()*total;
+  const total=pool.reduce((s,e)=>s+(e.weight||1),0);let r=Math.random()*total;
   for(const e of pool){r-=(e.weight||1);if(r<=0)return e;}
   return pool[pool.length-1];
 }
 
 const logEl=document.getElementById("log");
-function print(msg,cls=""){const p=document.createElement("p");p.className="log-line";p.innerHTML=cls?`<span class="${cls}">${msg}</span>`:msg;logEl.appendChild(p);logEl.scrollTop=logEl.scrollHeight;}
-function sep(){print("");}
+function print(msg,cls=""){
+  const p=document.createElement("p");p.className="ll";
+  p.innerHTML=cls?`<span class="${cls}">${msg}</span>`:msg;
+  logEl.appendChild(p);logEl.scrollTop=logEl.scrollHeight;
+}
+function sep(){print("")}
 
 function applyDebuff(d){S.debuffs.push({...d});S[d.stat]-=d.amt;}
 function tickDebuffs(){S.debuffs.forEach(d=>{d.turns--;if(d.turns<=0)S[d.stat]+=d.amt;});S.debuffs=S.debuffs.filter(d=>d.turns>0);renderDebuffs();}
-function renderDebuffs(){const el=document.getElementById("debuffs");el.textContent=S.debuffs.length?S.debuffs.map(d=>d.stat.toUpperCase()+"-"+d.amt+" ("+d.turns+"t)").join("  "):""}
+function renderDebuffs(){const el=document.getElementById("debuffs");el.textContent=S.debuffs.length?S.debuffs.map(d=>d.stat.toUpperCase()+"-"+d.amt+" ("+d.turns+"t)").join("  "):"";}
 
 function updateStats(){
   document.getElementById("s-hp").textContent=S.hp+"/"+S.maxHp;
@@ -293,37 +492,39 @@ function updateStats(){
   document.getElementById("s-def").textContent=S.def;
   document.getElementById("s-gold").textContent=S.gold+"g";
   document.getElementById("s-level").textContent=S.level;
+  document.getElementById("lbl-gold").textContent=t().lblGold;
+  document.getElementById("lbl-lvl").textContent=t().lblLvl;
+  document.getElementById("xp-lbl").textContent=t().xpLbl;
   const pct=Math.max(0,S.hp/S.maxHp*100);
   const hb=document.getElementById("hp-bar");
   hb.style.width=pct+"%";
   hb.style.background=pct>50?"#3B6D11":pct>25?"#BA7517":"#A32D2D";
   const needed=xpForLevel(S.level);
   document.getElementById("xp-bar").style.width=Math.min(100,S.xp/needed*100)+"%";
-  document.getElementById("xp-text").textContent=S.xp+"/"+needed;
-  document.getElementById("loc-name").textContent=LOCATIONS[S.location].name;
+  document.getElementById("xp-txt").textContent=S.xp+"/"+needed;
+  document.getElementById("loc-name").textContent=locs()[S.location].name;
 }
 
 function updateEnemyBlock(){
   const eb=document.getElementById("enemy-block");
   if(!S.enemy){eb.style.display="none";return;}
   eb.style.display="block";
-  eb.className=S.enemy.isBoss?"boss-block":"";
-  const crown=document.getElementById("enemy-crown");
-  crown.style.display=S.enemy.isBoss?"inline":"none";
-  crown.textContent=S.enemy.isBoss?"★":"";
-  document.getElementById("enemy-name-text").textContent=S.enemy.name;
-  const statusEl=document.getElementById("enemy-status");
-  statusEl.textContent=S.enemy.stunTurns>0?"[ATURDIDO "+S.enemy.stunTurns+"]":"";
+  eb.className=S.enemy.isBoss?"boss":"";
+  const star=document.getElementById("e-star");
+  star.style.display=S.enemy.isBoss?"inline":"none";
+  document.getElementById("e-name").textContent=ename(S.enemy);
+  document.getElementById("e-status").textContent=S.enemy.stunTurns>0?"[STUNNED "+S.enemy.stunTurns+"]":"";
   const pct=Math.max(0,S.enemy.hp/S.enemy.maxHp*100);
-  document.getElementById("enemy-bar").style.width=pct+"%";
-  document.getElementById("enemy-hp-text").textContent="HP: "+Math.max(0,S.enemy.hp)+"/"+S.enemy.maxHp;
+  document.getElementById("e-bar").style.width=pct+"%";
+  document.getElementById("e-hp-txt").textContent="HP: "+Math.max(0,S.enemy.hp)+"/"+S.enemy.maxHp;
 }
 
 function checkBossPhase(){
   if(!S.enemy||!S.enemy.phases)return;
   S.enemy.phases.forEach(ph=>{
     if(!ph.triggered&&S.enemy.hp/S.enemy.maxHp<=ph.threshold){
-      ph.triggered=true;print(ph.msg,"boss-line");
+      ph.triggered=true;
+      print((ph.msg[LANG]||ph.msg.en),"bl");
       if(ph.atkBoost)S.enemy.atk+=ph.atkBoost;
       if(ph.defBoost)S.enemy.def=(S.enemy.def||0)+ph.defBoost;
       if(ph.specialBoost)S.enemy.special.chance=Math.min(.9,S.enemy.special.chance+ph.specialBoost);
@@ -333,7 +534,7 @@ function checkBossPhase(){
 
 function mkBtn(label,fn,cls,full){
   const b=document.createElement("button");
-  b.className="action-btn"+(cls?" "+cls:"");
+  b.className="btn"+(cls?" "+cls:"");
   if(full)b.style.gridColumn="1 / -1";
   b.innerHTML=label;b.onclick=fn;return b;
 }
@@ -346,8 +547,8 @@ function renderAbilities(){
   row.style.display="grid";
   avail.forEach(ab=>{
     const cd=S.abilityCDs[ab.id]||0;
-    const b=mkBtn(ab.name+(cd>0?` <span class="cd-badge">[${cd}]</span>`:""),()=>useAbility(ab),"btn-ability");
-    b.title=ab.desc+" | CD: "+ab.cd[DIFF]+(cd>0?" | Listo en "+cd:" | Listo");
+    const name=t().abilities[ab.id];
+    const b=mkBtn(name+(cd>0?` <span class="cd-badge">[${cd}]</span>`:""),()=>useAbility(ab),"ability");
     if(cd>0)b.disabled=true;
     row.appendChild(b);
   });
@@ -370,32 +571,33 @@ function tickCDs(){Object.keys(S.abilityCDs).forEach(k=>{if(S.abilityCDs[k]>0)S.
 function renderExplore(){
   S.phase="explore";
   document.getElementById("abilities-row").style.display="none";
-  document.getElementById("dead-overlay").style.display="none";
+  document.getElementById("dead-panel").style.display="none";
   const act=document.getElementById("actions");act.innerHTML="";
-  Object.entries(LOCATIONS[S.location].exits).forEach(([dest,label])=>{act.appendChild(mkBtn("→ "+label,()=>travel(dest)));});
+  const loc=locs()[S.location];
+  Object.entries(loc.exits).forEach(([dest,label])=>{act.appendChild(mkBtn("→ "+label,()=>travel(dest),"move"))});
   const enemies=getEnemies();
   const pool=(enemies[S.location]||[]).filter(e=>S.level>=e.minLvl&&!e.isBoss&&(e.maxLvl===undefined||S.level<=e.maxLvl));
   const bossPool=(enemies[S.location]||[]).filter(e=>e.isBoss&&S.level>=e.minLvl);
-  if(pool.length)act.appendChild(mkBtn("⚔ Buscar enemigos",()=>encounter(false)));
-  if(bossPool.length)act.appendChild(mkBtn("☠ Desafiar un Jefe",()=>encounter(true),"btn-boss"));
+  if(pool.length)act.appendChild(mkBtn(t().searchEnemies,()=>encounter(false),"action"));
+  if(bossPool.length)act.appendChild(mkBtn(t().challengeBoss,()=>encounter(true),"boss-btn"));
   if(S.location==="town"){
-    act.appendChild(mkBtn("Visitar mercader",()=>renderShop()));
+    act.appendChild(mkBtn(t().visitMerchant,()=>renderShop(),"heal"));
     const cfg=CONFIGS[DIFF];
     if(cfg.restCost===0){
-      if(S.hp<S.maxHp)act.appendChild(mkBtn("Descansar (gratis, HP lleno)",()=>{S.hp=S.maxHp;print("¡Completamente descansado!","ok");updateStats();renderExplore();}));
+      if(S.hp<S.maxHp)act.appendChild(mkBtn(t().restFree,()=>{S.hp=S.maxHp;print(t().restedFree,"ok");updateStats();renderExplore();},"heal"));
     }else{
-      if(S.hp<S.maxHp)act.appendChild(mkBtn("Descansar — "+cfg.restCost+"g",()=>{
-        if(S.gold<cfg.restCost){print("No tienes suficiente oro (necesitas "+cfg.restCost+"g).","dmg");return;}
-        S.gold-=cfg.restCost;S.hp=S.maxHp;print("Descansado completamente. -"+cfg.restCost+"g","ok");updateStats();renderExplore();
-      }));
+      if(S.hp<S.maxHp)act.appendChild(mkBtn(t().restCost(cfg.restCost),()=>{
+        if(S.gold<cfg.restCost){print(t().cantAffordRest(cfg.restCost),"dmg");return;}
+        S.gold-=cfg.restCost;S.hp=S.maxHp;print(t().restedFully(cfg.restCost),"ok");updateStats();renderExplore();
+      },"heal"));
     }
   }
 }
 
 function travel(dest){
   S.location=dest;sep();
-  print("— "+LOCATIONS[dest].name+" —","em");
-  print(LOCATIONS[dest].desc,"muted");
+  const loc=locs()[dest];
+  print("— "+loc.name+" —","em");print(loc.desc,"mu");
   updateStats();renderExplore();
 }
 
@@ -403,22 +605,22 @@ function encounter(bossOnly){
   const enemies=getEnemies();
   let pool=(enemies[S.location]||[]);
   pool=bossOnly?pool.filter(e=>e.isBoss&&S.level>=e.minLvl):pool.filter(e=>!e.isBoss&&S.level>=e.minLvl&&(e.maxLvl===undefined||S.level<=e.maxLvl));
-  if(!pool.length){print("No hay enemigos adecuados aquí en tu nivel.","muted");return;}
+  if(!pool.length){print(t().noEnemies,"mu");return;}
   const tmpl=pickEnemy(pool);
   S.enemy=JSON.parse(JSON.stringify(tmpl));
   sep();
-  if(S.enemy.isBoss)print("★ ¡JEFE: "+S.enemy.name+"! ★","boss-line");
-  else print("¡Un "+S.enemy.name+" aparece! HP: "+S.enemy.hp,"dmg");
+  if(S.enemy.isBoss)print(t().bossAppears(ename(S.enemy)),"bl");
+  else print(t().enemyAppears(ename(S.enemy),S.enemy.hp),"dmg");
   updateEnemyBlock();renderCombat();
 }
 
 function renderCombat(){
   S.phase="combat";renderAbilities();
   const act=document.getElementById("actions");act.innerHTML="";
-  act.appendChild(mkBtn("⚔ Atacar",()=>doAttack()));
-  act.appendChild(mkBtn("Huir ("+Math.round(CONFIGS[DIFF].fleeFail*100)+"% fallo)",()=>flee(),"btn-danger"));
+  act.appendChild(mkBtn(t().attack,()=>doAttack(),"action"));
+  act.appendChild(mkBtn(t().flee(Math.round(CONFIGS[DIFF].fleeFail*100)),()=>flee(),"danger"));
   const pots=S.inventory.filter(i=>i==="potion").length;
-  if(pots>0)act.appendChild(mkBtn("Usar Poción ("+pots+")",()=>usePotion()));
+  if(pots>0)act.appendChild(mkBtn(t().potion(pots),()=>usePotion(),"heal"));
 }
 
 function playerDmg(){return Math.max(1,S.atk+rnd(3)-1-((S.enemy&&S.enemy.def)||0));}
@@ -426,7 +628,7 @@ function playerDmg(){return Math.max(1,S.atk+rnd(3)-1-((S.enemy&&S.enemy.def)||0
 function doAttack(){
   if(!S.enemy)return;
   const d=playerDmg();S.enemy.hp-=d;
-  print("Golpeas a "+S.enemy.name+" por "+d+".","ok");
+  print(t().hitEnemy(ename(S.enemy),d),"ok");
   checkBossPhase();updateEnemyBlock();
   if(S.enemy.hp<=0){enemyDied();return;}
   enemyAttacks();tickCDs();tickDebuffs();
@@ -435,25 +637,28 @@ function doAttack(){
 
 function enemyAttacks(){
   if(!S.enemy)return;
-  if(S.enemy.stunTurns>0){S.enemy.stunTurns--;print(S.enemy.name+" está aturdido! ("+S.enemy.stunTurns+" restantes)","muted");updateEnemyBlock();return;}
+  if(S.enemy.stunTurns>0){S.enemy.stunTurns--;print(t().stunned(ename(S.enemy),S.enemy.stunTurns),"mu");updateEnemyBlock();return;}
   let dmg=Math.max(1,S.enemy.atk-S.def+rnd(4)-1);
   const sp=S.enemy.special;
   if(sp&&Math.random()<sp.chance){
-    if(sp.heal){S.enemy.hp=Math.min(S.enemy.maxHp,S.enemy.hp+sp.heal);print(S.enemy.name+" "+sp.msg,"boss-line");updateEnemyBlock();return;}
-    if(sp.debuff){applyDebuff(sp.debuff);print(S.enemy.name+" "+sp.msg,"boss-line");renderDebuffs();}
+    const msg=emsg(sp);
+    if(sp.heal){S.enemy.hp=Math.min(S.enemy.maxHp,S.enemy.hp+sp.heal);print(ename(S.enemy)+" "+msg,"bl");updateEnemyBlock();return;}
+    if(sp.debuff){applyDebuff(sp.debuff);print(ename(S.enemy)+" "+msg,"bl");renderDebuffs();}
     if(sp.ignoresDef)dmg=Math.max(1,S.enemy.atk+rnd(4)-1);
     if(sp.dmgMult)dmg=Math.round(dmg*sp.dmgMult);
     if(sp.lifeSteal){S.enemy.hp=Math.min(S.enemy.maxHp,S.enemy.hp+Math.round(dmg*0.35));updateEnemyBlock();}
-    if(!sp.debuff||sp.dmgMult)print(S.enemy.name+" "+sp.msg+" "+dmg+" daño!","boss-line");
-  }else{print(S.enemy.name+" te golpea por "+dmg+".","dmg");}
+    if(!sp.debuff||sp.dmgMult)print(ename(S.enemy)+" "+msg+" "+dmg,"bl");
+  }else{
+    print(ename(S.enemy)+" → "+dmg,"dmg");
+  }
   S.hp=Math.max(0,S.hp-dmg);updateStats();
   if(S.hp<=0)renderDead();
 }
 
 function enemyDied(){
   const r=S.enemy.reward;S.gold+=r.gold;S.xp+=r.xp;
-  print("¡Victoria! +"+r.gold+"g +"+r.xp+" XP","em");
-  if(S.enemy.isBoss)print("★ ¡Jefe derrotado! Una leyenda nace.","boss-line");
+  print(t().victory(r.gold,r.xp),"em");
+  if(S.enemy.isBoss)print(t().bossSlain,"bl");
   S.enemy=null;
   document.getElementById("enemy-block").style.display="none";
   document.getElementById("abilities-row").style.display="none";
@@ -467,26 +672,26 @@ function checkLevelUp(){
     const cfg=CONFIGS[DIFF];
     S.maxHp+=cfg.hpPerLevel;S.hp=Math.min(S.maxHp,S.hp+cfg.hpPerLevel);S.atk+=cfg.atkPerLevel;
     const newAb=ABILITIES.find(a=>a.unlockLvl===S.level);
-    print("✨ ¡Nivel "+S.level+"! Max HP +"+cfg.hpPerLevel+", ATK +"+cfg.atkPerLevel+(newAb?" | ¡Nueva habilidad: "+newAb.name+"!":""),"em");
+    print(t().levelUp(S.level,cfg.hpPerLevel,cfg.atkPerLevel,newAb?t().abilities[newAb.id]:null),"em");
   }
 }
 
 function flee(){
   const cfg=CONFIGS[DIFF];
   if(Math.random()>cfg.fleeFail){
-    let msg="¡Escapaste!";
+    let msg=t().escapedFull;
     if(DIFF!=='easy'){
       const penalty=Math.round(S.enemy.atk*0.5);S.hp=Math.max(0,S.hp-penalty);
-      msg="¡Apenas escapaste! Golpeado por "+penalty+" al huir.";
+      msg=t().escapedHit(ename(S.enemy),penalty);
       print(msg,"dmg");
-    }else{print(msg,"muted");}
+    }else{print(msg,"mu");}
     S.enemy=null;
     document.getElementById("enemy-block").style.display="none";
     document.getElementById("abilities-row").style.display="none";
     updateStats();if(S.hp<=0){renderDead();return;}renderExplore();
   }else{
     const d=Math.max(1,S.enemy.atk-S.def+rnd(3));S.hp=Math.max(0,S.hp-d);
-    print("¡Huida fallida! "+S.enemy.name+" te golpea por "+d+".","dmg");
+    print(t().fleeFailed(ename(S.enemy),d),"dmg");
     updateStats();if(S.hp<=0){renderDead();return;}renderCombat();
   }
 }
@@ -494,61 +699,93 @@ function flee(){
 function usePotion(){
   const idx=S.inventory.indexOf("potion");if(idx<0)return;
   S.inventory.splice(idx,1);
-  const heal=CONFIGS[DIFF].potionHeal;
-  const h=Math.min(S.maxHp-S.hp,heal);S.hp+=h;
-  print("Poción: +"+h+" HP","ok");updateStats();
+  const heal=CONFIGS[DIFF].potionHeal;const h=Math.min(S.maxHp-S.hp,heal);S.hp+=h;
+  print(t().potionHeal(h),"ok");updateStats();
   if(S.phase==="combat")renderCombat();
 }
 
 function renderShop(){
   document.getElementById("abilities-row").style.display="none";
   const act=document.getElementById("actions");act.innerHTML="";
-  SHOP_ITEMS.forEach(item=>{
-    const cost=item.cost[DIFF];
-    const b=mkBtn(item.name+" ("+cost+"g)",()=>{
-      if(S.gold<cost){print("No tienes suficiente oro.","dmg");return;}
-      S.gold-=cost;print("Comprado: "+item.fn(),"ok");updateStats();renderShop();
-    });
+  const costs=SHOP_COSTS[DIFF];
+  SHOP_BASE.forEach((item,i)=>{
+    const cost=costs[i];
+    const b=mkBtn(t().shopItems[i]+" ("+cost+"g)",()=>{
+      if(S.gold<cost){print(t().notEnoughGold,"dmg");return;}
+      S.gold-=cost;const r=item.fn();print(t().boughtMsg(r),"ok");updateStats();renderShop();
+    },"heal");
     if(S.gold<cost)b.disabled=true;
     act.appendChild(b);
   });
-  act.appendChild(mkBtn("← Salir de la tienda",()=>renderExplore(),null,true));
+  act.appendChild(mkBtn(t().shopLeave,()=>renderExplore(),null,true));
 }
 
 function renderDead(){
   document.getElementById("abilities-row").style.display="none";
   document.getElementById("enemy-block").style.display="none";
   document.getElementById("actions").innerHTML="";
-  const msgs={easy:"Incluso el Sendero del Peregrino tiene sus peligros.",balanced:"El mundo te venció esta vez. Regresa más fuerte.",hard:"Sin piedad en este mundo. Nunca la hubo."};
-  document.getElementById("dead-msg").textContent=msgs[DIFF];
-  document.getElementById("dead-overlay").style.display="block";
+  const dp=document.getElementById("dead-panel");
+  document.getElementById("dead-title").textContent=t().deadTitle;
+  document.getElementById("dead-sub").textContent=t().deadSub[DIFF];
+  document.getElementById("dead-btn").textContent=t().deadBtn;
+  dp.style.display="block";
 }
 
-function restartGame(){initState();logEl.innerHTML="";travel("crossroads");}
+function restartGame(){
+  initState();logEl.innerHTML="";
+  const locName=locs()["crossroads"].name;
+  print(t().restart(locName),"mu");
+  travel("crossroads");
+}
 
 function initState(){
   const cfg=CONFIGS[DIFF];
   Object.assign(S,{hp:cfg.hp,maxHp:cfg.hp,atk:cfg.atk,def:cfg.def,gold:cfg.gold,xp:0,level:1,inventory:[],location:"crossroads",enemy:null,phase:"explore",abilityCDs:{},debuffs:[]});
 }
 
+function setLang(lang){
+  LANG=lang;
+  document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add("active");
+  const tx=T[lang];
+  document.getElementById("logo-sub").textContent=tx.logoSub;
+  document.getElementById("lang-lbl").textContent=tx.langLbl;
+  document.getElementById("diff-lbl").textContent=tx.diffLbl;
+  document.getElementById("d-easy-tag").textContent=tx.dEasyTag;
+  document.getElementById("d-easy-name").textContent=tx.dEasyName;
+  document.getElementById("d-easy-desc").textContent=tx.dEasyDesc;
+  document.getElementById("d-easy-stats").innerHTML=tx.dEasyStats.replace(/\n/g,"<br>");
+  document.getElementById("d-bal-tag").textContent=tx.dBalTag;
+  document.getElementById("d-bal-name").textContent=tx.dBalName;
+  document.getElementById("d-bal-desc").textContent=tx.dBalDesc;
+  document.getElementById("d-bal-stats").innerHTML=tx.dBalStats.replace(/\n/g,"<br>");
+  document.getElementById("d-hard-tag").textContent=tx.dHardTag;
+  document.getElementById("d-hard-name").textContent=tx.dHardName;
+  document.getElementById("d-hard-desc").textContent=tx.dHardDesc;
+  document.getElementById("d-hard-stats").innerHTML=tx.dHardStats.replace(/\n/g,"<br>");
+}
+
 function startGame(diff){
   DIFF=diff;
-  document.getElementById("screen-select").style.display="none";
-  document.getElementById("game").style.display="block";
+  document.getElementById("screen-select").classList.remove("active");
+  document.getElementById("screen-game").classList.add("active");
+  const cls={easy:"easy",balanced:"bal",hard:"hard"}[diff];
   const badge=document.getElementById("diff-badge");
-  badge.textContent=DIFF_LABELS[diff];
-  badge.className="diff-badge "+DIFF_BADGE_CLS[diff];
-  initState();
-  logEl.innerHTML="";
-  const cfg=CONFIGS[DIFF];
-  print(cfg.warnMsg,DIFF==='easy'?"em":"boss-line");
-  print(cfg.warnSub,"muted");
+  badge.textContent=t().badges[diff];
+  badge.className="badge "+cls;
+  document.getElementById("lang-badge").textContent=t().badgesLang[LANG];
+  document.getElementById("btn-back").textContent=t().menu;
+  initState();logEl.innerHTML="";
+  print(t().warnMsg[DIFF],DIFF==='easy'?"em":"bl");
+  print(t().warnSub[DIFF],"mu");
   travel("crossroads");
 }
 
 function backToSelect(){
-  document.getElementById("game").style.display="none";
-  document.getElementById("screen-select").style.display="flex";
+  document.getElementById("screen-game").classList.remove("active");
+  document.getElementById("screen-select").classList.add("active");
   S.enemy=null;
 }
+
+setLang('en');
 </script>
