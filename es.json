@@ -121,7 +121,9 @@
     "restedFully":    "Descansado. -{cost}g",
     "restedFree":     "¡Completamente descansado!",
     "notEnoughGold":  "No tienes suficiente oro.",
-    "boughtMsg":      "Comprado: {item}"
+    "boughtMsg":      "Comprado: {item}",
+    "enemyAppeared":  "⚠ Nuevo en {area}: {names}",
+    "enemyVanished":  "✦ Ya no en {area}: {names}"
   },
 
   "dead": {

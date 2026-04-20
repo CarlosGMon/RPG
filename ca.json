@@ -121,7 +121,9 @@
     "restedFully":    "Descansat. -{cost}g",
     "restedFree":     "Completament descansat!",
     "notEnoughGold":  "No tens prou or.",
-    "boughtMsg":      "Comprat: {item}"
+    "boughtMsg":      "Comprat: {item}",
+    "enemyAppeared":  "⚠ Nou a {area}: {names}",
+    "enemyVanished":  "✦ Ja no a {area}: {names}"
   },
 
   "dead": {

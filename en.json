@@ -121,7 +121,9 @@
     "restedFully":    "Rested fully. -{cost}g",
     "restedFree":     "Fully rested!",
     "notEnoughGold":  "Not enough gold.",
-    "boughtMsg":      "Bought: {item}"
+    "boughtMsg":      "Bought: {item}",
+    "enemyAppeared":  "⚠ New in {area}: {names}",
+    "enemyVanished":  "✦ Gone from {area}: {names}"
   },
 
   "dead": {
