@@ -840,23 +840,31 @@ function validateLocales() {
   });
 }
 
-function ename(e) {
-  const loc = LOCALES[LANG].enemies;
+function _elookup(e) {
+  // Find the translation entry by matching _nameEn against en.json names,
+  // then returning the same index in the active language. This avoids relying
+  // on positional index, which breaks when difficulty arrays have different lengths.
   const diff = DIFF === 'balanced' ? 'normal' : DIFF;
   const area = e._area || 'forest';
-  const entry = loc[diff] && loc[diff][area] && loc[diff][area][e._idx];
+  const nameEn = e._nameEn;
+  if (!nameEn) return null;
+  const enArr = LOCALES['en'].enemies[diff] && LOCALES['en'].enemies[diff][area];
+  if (!enArr) return null;
+  const idx = enArr.findIndex(x => x.name === nameEn);
+  if (idx < 0) return null;
+  const trArr = LOCALES[LANG].enemies[diff] && LOCALES[LANG].enemies[diff][area];
+  return (trArr && trArr[idx]) || null;
+}
+function ename(e) {
+  const entry = _elookup(e);
   return (entry && entry.name) || e._nameEn || '???';
 }
 function emsg(e) {
-  const loc = LOCALES[LANG].enemies;
-  const diff = DIFF === 'balanced' ? 'normal' : DIFF;
-  const entry = loc[diff] && loc[diff][e._area] && loc[diff][e._area][e._idx];
+  const entry = _elookup(e);
   return (entry && entry.special) || '';
 }
 function ephase(e, phaseIdx) {
-  const loc = LOCALES[LANG].enemies;
-  const diff = DIFF === 'balanced' ? 'normal' : DIFF;
-  const entry = loc[diff] && loc[diff][e._area] && loc[diff][e._area][e._idx];
+  const entry = _elookup(e);
   return (entry && entry.phases && entry.phases[phaseIdx]) || '';
 }
 
@@ -1128,12 +1136,9 @@ function checkLevelUp() {
     const allEnemies=getEnemies();
     Object.keys(allEnemies).forEach(area=>{
       const locName=t().locations[area]?.name||area;
-      const fullPool=(allEnemies[area]||[]);
-      const nonBossPool=fullPool.filter(e=>!e.isBoss);
-      // Attach _area and _idx (index in full area array) so ename() can find the translation
-      const withIdx=nonBossPool.map(e=>({...e,_area:area,_idx:fullPool.indexOf(e)}));
-      const appeared=withIdx.filter(e=>e.minLvl===S.level).map(e=>ename(e));
-      const vanished=withIdx.filter(e=>e.maxLvl===prevLvl).map(e=>ename(e));
+      const pool=(allEnemies[area]||[]).filter(e=>!e.isBoss).map(e=>({...e,_area:area}));
+      const appeared=pool.filter(e=>e.minLvl===S.level).map(e=>ename(e));
+      const vanished=pool.filter(e=>e.maxLvl===prevLvl).map(e=>ename(e));
       if(appeared.length) print(i18n(t().combat.enemyAppeared,{area:locName,names:appeared.join(", ")}),"bl");
       if(vanished.length) print(i18n(t().combat.enemyVanished,{area:locName,names:vanished.join(", ")}),"mu");
     });
