@@ -1,118 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chronicles of the Verdant Crossroads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --rpg-gold:#BA7517;--rpg-gold-l:#FAC775;--rpg-red:#A32D2D;--rpg-green:#3B6D11;
-  --rpg-purple:#534AB7;--rpg-boss:#854F0B;--rpg-dark:#2C2C2A;
-  --rpg-easy:#3B6D11;--rpg-bal:#534AB7;--rpg-hard:#A32D2D;
-}
-#app{font-family:var(--font-mono,monospace);color:var(--color-text-primary);max-width:700px;margin:0 auto;padding:1rem 0}
-.screen{display:none}
-.screen.active{display:block}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* SELECT SCREEN */
-#screen-select{text-align:center}
-.game-logo{padding:1.5rem 0 1rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
-.game-logo h1{font-size:22px;font-weight:500;letter-spacing:.06em;color:var(--color-text-primary);margin-bottom:4px}
-.game-logo p{font-size:12px;color:var(--color-text-secondary);letter-spacing:.04em}
+:root {
+  --gold:       #C9922A;
+  --gold-l:     #F0C567;
+  --gold-d:     #7A530F;
+  --gold-bg:    #1A1108;
+  --red:        #9B2828;
+  --red-l:      #E05555;
+  --green:      #2D6B1E;
+  --green-l:    #5DBB42;
+  --purple:     #4A3D9B;
+  --purple-l:   #9B91F0;
+  --stone:      #3A3530;
+  --stone-l:    #6B6258;
+  --parchment:  #F5ECD5;
+  --ink:        #1C1610;
+  --ink-soft:   #2E2820;
+  --surface:    #201C17;
+  --surface-2:  #2A2520;
+  --surface-3:  #332E28;
+  --border:     rgba(201,146,42,0.25);
+  --border-str: rgba(201,146,42,0.55);
+  --font-title: 'Cinzel', serif;
+  --font-body:  'Crimson Text', serif;
+  --font-mono:  'JetBrains Mono', monospace;
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+}
+
+body {
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  font-size: 16px;
+  min-height: 100vh;
+}
+
+/* ── BACKGROUND TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(201,146,42,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(155,40,40,0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ══════════════════════════════════════════
+   SELECT SCREEN
+══════════════════════════════════════════ */
+
+#screen-select { text-align: center; }
+
+.game-logo {
+  padding: 2rem 1rem 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.game-logo::after {
+  content: '⬥';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold);
+  font-size: 14px;
+  background: var(--ink);
+  padding: 0 8px;
+}
+
+.logo-ornament {
+  font-size: 11px;
+  letter-spacing: .3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: .75rem;
+  opacity: 0.8;
+}
+
+.game-logo h1 {
+  font-family: var(--font-title);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--gold-l);
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  margin-bottom: .5rem;
+}
+
+.game-logo p {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 15px;
+  color: rgba(245,236,213,0.6);
+  letter-spacing: .02em;
+}
 
 /* LANG SELECTOR */
-.lang-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.5rem}
-.lang-row span{font-size:11px;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase}
-.lang-btn{font-size:12px;font-family:var(--font-mono,monospace);background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md,8px);padding:5px 14px;cursor:pointer;color:var(--color-text-secondary);transition:all .15s}
-.lang-btn.active{border-color:var(--rpg-gold);color:var(--rpg-gold);background:var(--color-background-secondary)}
-.lang-btn:hover:not(.active){background:var(--color-background-secondary)}
+.lang-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 2rem;
+}
+
+.lang-row span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--stone-l);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.lang-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 6px 16px;
+  cursor: pointer;
+  color: rgba(245,236,213,0.5);
+  letter-spacing: .05em;
+  transition: all .15s;
+  text-transform: uppercase;
+}
+
+.lang-btn.active {
+  border-color: var(--gold);
+  color: var(--gold-l);
+  background: rgba(201,146,42,0.12);
+}
+
+.lang-btn:hover:not(.active) {
+  border-color: var(--border-str);
+  color: var(--parchment);
+  background: var(--surface-3);
+}
 
 /* DIFF CARDS */
-.diff-section h2{font-size:11px;color:var(--color-text-secondary);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem}
-.diff-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:1.5rem}
-.diff-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg,12px);padding:1.1rem 1rem;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden}
-.diff-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
-.diff-card.easy::before{background:var(--rpg-easy)}
-.diff-card.bal::before{background:var(--rpg-bal)}
-.diff-card.hard::before{background:var(--rpg-hard)}
-.diff-card:hover{background:var(--color-background-secondary);transform:translateY(-1px)}
-.diff-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-.diff-tag.easy{color:var(--rpg-easy)}.diff-tag.bal{color:var(--rpg-bal)}.diff-tag.hard{color:var(--rpg-hard)}
-.diff-name{font-size:15px;font-weight:500;margin-bottom:5px}
-.diff-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.6}
-.diff-stats{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary);font-size:10px;color:var(--color-text-secondary);line-height:1.8}
+.diff-section h2 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--stone-l);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
 
-/* GAME SCREEN */
-#screen-game{position:relative}
-.g-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem}
-.g-title{font-size:12px;color:var(--color-text-secondary);letter-spacing:.04em}
-.g-badges{display:flex;gap:6px;align-items:center}
-.badge{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;letter-spacing:.05em}
-.badge.easy{background:#EAF3DE;color:#27500A}.badge.bal{background:#EEEDFE;color:#26215C}.badge.hard{background:#FCEBEB;color:#791F1F}
-.badge.lang{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
-#btn-back{font-size:11px;color:var(--color-text-secondary);background:none;border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:var(--font-mono,monospace)}
-#btn-back:hover{background:var(--color-background-secondary)}
+.diff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
 
-/* LOCATION */
-.loc-bar{display:flex;align-items:center;gap:7px;margin-bottom:.65rem}
-.loc-dot{width:7px;height:7px;border-radius:50%;background:var(--rpg-gold);flex-shrink:0}
-.loc-name{font-size:11px;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase}
+.diff-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.25rem 1rem 1rem;
+  cursor: pointer;
+  transition: transform .18s, border-color .18s, background .18s;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.diff-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.diff-card.easy::before   { background: var(--green-l); }
+.diff-card.bal::before    { background: var(--purple-l); }
+.diff-card.hard::before   { background: var(--red-l); }
+
+.diff-card:hover {
+  transform: translateY(-3px);
+  background: var(--surface-3);
+}
+
+.diff-card.easy:hover   { border-color: rgba(93,187,66,0.5); }
+.diff-card.bal:hover    { border-color: rgba(155,145,240,0.5); }
+.diff-card.hard:hover   { border-color: rgba(224,85,85,0.5); }
+
+.diff-icon {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.diff-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.diff-tag.easy   { color: var(--green-l); }
+.diff-tag.bal    { color: var(--purple-l); }
+.diff-tag.hard   { color: var(--red-l); }
+
+.diff-name {
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold-l);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.diff-desc {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(245,236,213,0.55);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.diff-stats {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: rgba(245,236,213,0.4);
+  line-height: 2;
+  letter-spacing: .02em;
+}
+
+/* ══════════════════════════════════════════
+   GAME SCREEN
+══════════════════════════════════════════ */
+
+.g-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: .85rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.1rem;
+}
+
+.g-title {
+  font-family: var(--font-title);
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: .04em;
+}
+
+.g-badges { display: flex; gap: 6px; align-items: center; }
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.badge.easy   { background: rgba(45,107,30,0.3); color: var(--green-l); border: 1px solid rgba(93,187,66,0.3); }
+.badge.bal    { background: rgba(74,61,155,0.3); color: var(--purple-l); border: 1px solid rgba(155,145,240,0.3); }
+.badge.hard   { background: rgba(155,40,40,0.3); color: var(--red-l); border: 1px solid rgba(224,85,85,0.3); }
+.badge.lang   { background: var(--surface-2); color: var(--stone-l); border: 1px solid var(--border); }
+
+#btn-back {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--stone-l);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  cursor: pointer;
+  letter-spacing: .04em;
+  transition: all .15s;
+}
+#btn-back:hover { border-color: var(--border-str); color: var(--parchment); }
+
+/* LOCATION BAR */
+.loc-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: .8rem;
+}
+
+.loc-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px var(--gold);
+  flex-shrink: 0;
+}
+
+.loc-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
 
 /* LOG */
-#log{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md,8px);padding:.85rem;height:185px;overflow-y:auto;font-size:12px;line-height:1.9;margin-bottom:.65rem;scroll-behavior:smooth}
-.ll{margin:0}
-.em{color:#185FA5;font-weight:500}.dmg{color:#A32D2D}.ok{color:#3B6D11}.mu{color:var(--color-text-secondary)}.bl{color:#854F0B;font-weight:500}.al{color:#534AB7;font-weight:500}
+#log {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: .9rem 1rem;
+  height: 190px;
+  overflow-y: auto;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 2;
+  margin-bottom: .7rem;
+  scroll-behavior: smooth;
+}
+
+#log::-webkit-scrollbar { width: 4px; }
+#log::-webkit-scrollbar-track { background: transparent; }
+#log::-webkit-scrollbar-thumb { background: var(--border-str); border-radius: 2px; }
+
+.ll { margin: 0; }
+.em   { color: var(--gold-l); font-weight: 600; }
+.dmg  { color: var(--red-l); }
+.ok   { color: var(--green-l); }
+.mu   { color: rgba(245,236,213,0.45); font-style: italic; }
+.bl   { color: var(--gold); font-weight: 600; }
+.al   { color: var(--purple-l); }
 
 /* DEBUFFS */
-#debuffs{font-size:11px;color:#A32D2D;min-height:14px;margin-bottom:5px;letter-spacing:.03em}
+#debuffs {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--red-l);
+  min-height: 14px;
+  margin-bottom: 6px;
+  letter-spacing: .04em;
+}
 
-/* STATS BAR */
-#stats-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:.6rem}
-.stat-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md,8px);padding:6px 8px;text-align:center}
-.stat-lbl{font-size:9px;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
-.stat-val{font-size:14px;font-weight:500}
-.bar-wrap{height:4px;border-radius:2px;background:var(--color-border-tertiary);margin-top:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:2px;transition:width .35s}
+/* STATS GRID */
+#stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: .7rem;
+}
+
+.stat-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--stone-l);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.stat-val {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold-l);
+}
+
+.bar-wrap {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.06);
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .35s;
+}
 
 /* XP ROW */
-.xp-row{display:flex;align-items:center;gap:8px;margin-bottom:.65rem}
-.xp-lbl{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
-.xp-wrap{flex:1;height:3px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
-.xp-bar{height:100%;background:var(--rpg-purple);border-radius:2px;transition:width .35s}
-.xp-txt{font-size:11px;color:var(--color-text-secondary);white-space:nowrap}
+.xp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: .7rem;
+}
+
+.xp-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--stone-l);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+.xp-wrap {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.xp-bar {
+  height: 100%;
+  background: var(--purple-l);
+  border-radius: 2px;
+  transition: width .35s;
+}
+
+.xp-txt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--stone-l);
+  white-space: nowrap;
+}
 
 /* ENEMY BLOCK */
-#enemy-block{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md,8px);padding:9px 12px;margin-bottom:.7rem;font-size:13px;display:none}
-#enemy-block.boss{border-color:var(--rpg-gold)!important;background:#FAEEDA!important}
-.enemy-name-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-weight:500}
-.boss-star{color:var(--rpg-gold);font-size:13px}
-.enemy-hp-bar{height:5px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden;margin-bottom:3px}
-.enemy-hp-fill{height:100%;background:#A32D2D;border-radius:3px;transition:width .35s}
-.enemy-hp-txt{font-size:11px;color:var(--color-text-secondary)}
+#enemy-block {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  margin-bottom: .8rem;
+  font-size: 14px;
+  display: none;
+}
+
+#enemy-block.boss {
+  border-color: var(--gold) !important;
+  background: rgba(201,146,42,0.08) !important;
+}
+
+.enemy-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--parchment);
+}
+
+.boss-star { color: var(--gold); font-size: 14px; }
+
+.enemy-hp-bar {
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.enemy-hp-fill {
+  height: 100%;
+  background: var(--red-l);
+  border-radius: 3px;
+  transition: width .35s;
+}
+
+.enemy-hp-txt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--stone-l);
+}
 
 /* ABILITIES */
-#abilities-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:6px;display:none}
+#abilities-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 6px;
+}
 
-/* ACTIONS */
-#actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+/* ══════════════════════════════════════════
+   BUTTONS — the heart of the gamer feel
+══════════════════════════════════════════ */
 
-/* BUTTONS */
-.btn{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md,8px);padding:10px 12px;font-size:12px;cursor:pointer;color:var(--color-text-primary);font-family:var(--font-mono,monospace);text-align:left;transition:background .15s,border-color .15s,transform .1s;line-height:1.4}
-.btn:hover{background:var(--color-background-secondary)}
-.btn:active{transform:scale(.98)}
-.btn:disabled{opacity:.35;cursor:default;transform:none}
-.btn.full{grid-column:1/-1}
-.btn.ability{border-color:#AFA9EC!important;color:#3C3489!important}
-.btn.boss-btn{border-color:#EF9F27!important;color:#633806!important}
-.btn.danger{border-color:#F09595!important}
-.btn.move{border-left:3px solid var(--rpg-gold)}
-.btn.action{border-left:3px solid var(--rpg-green)}
-.btn.heal{border-left:3px solid #185FA5}
-.cd-badge{font-size:10px;color:var(--color-text-secondary);margin-left:3px}
+#actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
 
-/* DEAD OVERLAY */
-#dead-panel{display:none;text-align:center;padding:1.5rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg,12px);border:0.5px solid var(--color-border-tertiary);margin-top:.5rem}
-.dead-icon{font-size:28px;margin-bottom:.5rem}
-.dead-title{font-size:17px;font-weight:500;color:var(--rpg-red);margin-bottom:4px}
-.dead-sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+.btn {
+  position: relative;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 11px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--parchment);
+  text-align: left;
+  line-height: 1.35;
+  transition: background .12s, border-color .12s, transform .08s;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
+  pointer-events: none;
+}
+
+.btn:hover {
+  background: var(--surface-3);
+  transform: translateY(-1px);
+}
+
+.btn:active { transform: scale(0.98) translateY(0); }
+.btn:disabled { opacity: .3; cursor: default; transform: none; }
+
+.btn.full { grid-column: 1 / -1; }
+
+/* Move buttons — gold accent */
+.btn.move {
+  border-left: 3px solid var(--gold);
+  border-color: var(--border-str);
+  color: var(--gold-l);
+}
+.btn.move:hover { background: rgba(201,146,42,0.1); border-color: var(--gold); }
+
+/* Action buttons — green combat */
+.btn.action {
+  border-left: 3px solid var(--green-l);
+  border-color: rgba(93,187,66,0.4);
+  background: rgba(45,107,30,0.2);
+  color: var(--green-l);
+  font-weight: 600;
+  font-family: var(--font-title);
+  font-size: 13px;
+  letter-spacing: .03em;
+}
+.btn.action:hover { background: rgba(45,107,30,0.35); border-color: var(--green-l); }
+
+/* Boss buttons — gold glowing */
+.btn.boss-btn {
+  border-left: 3px solid var(--gold);
+  border-color: rgba(201,146,42,0.6);
+  background: rgba(201,146,42,0.1);
+  color: var(--gold-l);
+  font-family: var(--font-title);
+  font-size: 12px;
+  letter-spacing: .03em;
+}
+.btn.boss-btn:hover { background: rgba(201,146,42,0.2); border-color: var(--gold); }
+
+/* Danger — flee */
+.btn.danger {
+  border-color: rgba(224,85,85,0.4);
+  color: var(--red-l);
+}
+.btn.danger:hover { background: rgba(155,40,40,0.2); border-color: var(--red-l); }
+
+/* Heal / shop */
+.btn.heal {
+  border-color: rgba(155,145,240,0.4);
+  color: var(--purple-l);
+}
+.btn.heal:hover { background: rgba(74,61,155,0.2); border-color: var(--purple-l); }
+
+/* Ability buttons */
+.btn.ability {
+  border-color: rgba(155,145,240,0.45);
+  background: rgba(74,61,155,0.15);
+  color: var(--purple-l);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: center;
+  padding: 8px 6px;
+}
+.btn.ability:hover { background: rgba(74,61,155,0.3); border-color: var(--purple-l); }
+
+.cd-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--stone-l);
+  margin-left: 3px;
+}
+
+/* ══════════════════════════════════════════
+   DEAD PANEL
+══════════════════════════════════════════ */
+
+#dead-panel {
+  display: none;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: rgba(155,40,40,0.08);
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(224,85,85,0.3);
+  margin-top: .75rem;
+}
+
+.dead-icon {
+  font-size: 32px;
+  margin-bottom: .75rem;
+  opacity: 0.7;
+}
+
+.dead-title {
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--red-l);
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+}
+
+.dead-sub {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(245,236,213,0.5);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.dead-restart-btn {
+  display: inline-block;
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  padding: 12px 28px;
+  background: rgba(155,40,40,0.3);
+  border: 1px solid rgba(224,85,85,0.5);
+  border-radius: var(--r-md);
+  color: var(--red-l);
+  cursor: pointer;
+  transition: all .15s;
+  text-transform: uppercase;
+}
+.dead-restart-btn:hover { background: rgba(155,40,40,0.5); border-color: var(--red-l); color: var(--parchment); }
 
 /* DIVIDER */
-.sep-line{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:.5rem 0}
+.sep-line { border: none; border-top: 1px solid var(--border); margin: .5rem 0; }
 </style>
 
 <div id="app">
@@ -120,33 +691,37 @@
 <!-- SELECT SCREEN -->
 <div id="screen-select" class="screen active">
   <div class="game-logo">
+    <p class="logo-ornament">✦ &nbsp; An Interactive Adventure &nbsp; ✦</p>
     <h1 id="logo-title">Chronicles of the Verdant Crossroads</h1>
     <p id="logo-sub">Choose your fate, hero. The world awaits.</p>
   </div>
 
   <div class="lang-row">
     <span id="lang-lbl">Language</span>
-    <button class="lang-btn" onclick="setLang('en')">English</button>
-    <button class="lang-btn" onclick="setLang('es')">Español</button>
-    <button class="lang-btn" onclick="setLang('ca')">Català</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('ca')">CA</button>
   </div>
 
   <div class="diff-section">
     <h2 id="diff-lbl">Select difficulty</h2>
     <div class="diff-grid">
       <div class="diff-card easy" onclick="startGame('easy')">
+        <div class="diff-icon">🌿</div>
         <div class="diff-tag easy" id="d-easy-tag">Easy</div>
         <div class="diff-name" id="d-easy-name">Pilgrim's Path</div>
         <p class="diff-desc" id="d-easy-desc">For those who want to explore the story without dying too much.</p>
         <div class="diff-stats" id="d-easy-stats">HP: 30 · ATK: 6 · DEF: 2<br>Rest: free · Flee: easier<br>XP: fast levelling</div>
       </div>
       <div class="diff-card bal" onclick="startGame('balanced')">
+        <div class="diff-icon">⚔️</div>
         <div class="diff-tag bal" id="d-bal-tag">Normal</div>
         <div class="diff-name" id="d-bal-name">Adventurer's Route</div>
         <p class="diff-desc" id="d-bal-desc">Smooth difficulty curve. Real challenge without being unfair.</p>
         <div class="diff-stats" id="d-bal-stats">HP: 22 · ATK: 5 · DEF: 1<br>Rest: 6g · Varied enemies<br>Debuffs + phased bosses</div>
       </div>
       <div class="diff-card hard" onclick="startGame('hard')">
+        <div class="diff-icon">☠️</div>
         <div class="diff-tag hard" id="d-hard-tag">Hard</div>
         <div class="diff-name" id="d-hard-name">Condemned's Road</div>
         <p class="diff-desc" id="d-hard-desc">No mercy. Every decision matters. Death is permanent.</p>
@@ -167,7 +742,10 @@
     </div>
   </div>
 
-  <div class="loc-bar"><span class="loc-dot"></span><span class="loc-name" id="loc-name">—</span></div>
+  <div class="loc-bar">
+    <span class="loc-dot"></span>
+    <span class="loc-name" id="loc-name">—</span>
+  </div>
 
   <div id="log"></div>
   <div id="debuffs"></div>
@@ -176,7 +754,7 @@
     <div class="stat-box">
       <div class="stat-lbl" id="lbl-hp">HP</div>
       <div class="stat-val" id="s-hp">—</div>
-      <div class="bar-wrap"><div class="bar-fill" id="hp-bar" style="width:100%;background:#3B6D11"></div></div>
+      <div class="bar-wrap"><div class="bar-fill" id="hp-bar" style="width:100%;background:#5DBB42"></div></div>
     </div>
     <div class="stat-box"><div class="stat-lbl" id="lbl-atk">ATK</div><div class="stat-val" id="s-atk">—</div></div>
     <div class="stat-box"><div class="stat-lbl" id="lbl-def">DEF</div><div class="stat-val" id="s-def">—</div></div>
@@ -194,34 +772,26 @@
     <div class="enemy-name-row">
       <span id="e-star" class="boss-star" style="display:none">★</span>
       <span id="e-name">Enemy</span>
-      <span id="e-status" style="font-size:11px;color:var(--color-text-secondary);margin-left:4px"></span>
+      <span id="e-status" style="font-family:var(--font-mono);font-size:10px;color:var(--stone-l);margin-left:4px"></span>
     </div>
     <div class="enemy-hp-bar"><div class="enemy-hp-fill" id="e-bar" style="width:100%"></div></div>
     <div class="enemy-hp-txt" id="e-hp-txt"></div>
   </div>
 
-  <div id="abilities-row"></div>
+  <div id="abilities-row" style="display:none"></div>
   <div id="actions"></div>
 
   <div id="dead-panel">
     <div class="dead-icon">☠</div>
     <div class="dead-title" id="dead-title">You have fallen</div>
     <div class="dead-sub" id="dead-sub">The world defeated you this time.</div>
-    <button class="btn" onclick="restartGame()" style="margin:0 auto;display:block;padding:10px 24px" id="dead-btn">Try again</button>
+    <button class="dead-restart-btn" onclick="restartGame()" id="dead-btn">Try again</button>
   </div>
 </div>
 
 </div>
 
 <script>
-// ─────────────────────────────────────────────────────────────────────────────
-// LOCALES
-// In a real project these would be separate JSON files loaded via fetch().
-// To add a new language: copy one of these objects, translate the values,
-// and add the lang code to LOCALES below.
-// Keys must never be changed — only values. See locales/TRANSLATIONS.md.
-// ─────────────────────────────────────────────────────────────────────────────
-
 const LOCALES = {
 
 en: {
@@ -287,73 +857,54 @@ en: {
   enemies: {
     easy: {
       forest: [
-        { name:"Goblin Scout", special:null },
-        { name:"Wolf",         special:null },
-        { name:"Orc Raider",   special:null },
-        { name:"Forest Witch", special:"casts Hex!" }
+        { name:"Goblin Scout", special:null },{ name:"Wolf", special:null },
+        { name:"Orc Raider", special:null },{ name:"Forest Witch", special:"casts Hex!" }
       ],
       cave: [
-        { name:"Giant Bat",     special:null },
-        { name:"Stone Golem",   special:null },
-        { name:"Cave Troll",    special:"seismic slam!" },
-        { name:"Shadow Wraith", special:"drains your life!" }
+        { name:"Giant Bat", special:null },{ name:"Stone Golem", special:null },
+        { name:"Cave Troll", special:"seismic slam!" },{ name:"Shadow Wraith", special:"drains your life!" }
       ],
       ruins: [
-        { name:"Skeleton Knight",           special:null },
-        { name:"Cursed Mage",               special:"Arcane Burst!" },
-        { name:"Lich",                      special:"reanimates! +10 HP" },
-        { name:"BOSS: The Dread Knight",    isBoss:true, special:"Death Cleave — massive blow!" },
-        { name:"BOSS: Archlich Mortavian",  isBoss:true, special:"Soul Shatter!" }
+        { name:"Skeleton Knight", special:null },{ name:"Cursed Mage", special:"Arcane Burst!" },
+        { name:"Lich", special:"reanimates! +10 HP" },
+        { name:"BOSS: The Dread Knight", isBoss:true, special:"Death Cleave — massive blow!" },
+        { name:"BOSS: Archlich Mortavian", isBoss:true, special:"Soul Shatter!" }
       ]
     },
     normal: {
       forest: [
-        { name:"Goblin Scout",  special:null },
-        { name:"Wild Wolf",     special:null },
-        { name:"Bandit",        special:"cheap shots you!" },
-        { name:"Orc Raider",    special:"rages!" },
-        { name:"Forest Witch",  special:"hexes you! ATK-2 2 turns" },
-        { name:"Forest Hydra",  special:"regenerates! +8 HP" }
+        { name:"Goblin Scout", special:null },{ name:"Wild Wolf", special:null },
+        { name:"Bandit", special:"cheap shots you!" },{ name:"Orc Raider", special:"rages!" },
+        { name:"Forest Witch", special:"hexes you! ATK-2 2 turns" },{ name:"Forest Hydra", special:"regenerates! +8 HP" }
       ],
       cave: [
-        { name:"Giant Bat",      special:null },
-        { name:"Cave Rat Swarm", special:null },
-        { name:"Stone Golem",    special:"crushes you!" },
-        { name:"Cave Troll",     special:"ground smash!" },
-        { name:"Shadow Wraith",  special:"drains your life!" },
-        { name:"Basilisk",       special:"petrifies! DEF-2 2 turns" }
+        { name:"Giant Bat", special:null },{ name:"Cave Rat Swarm", special:null },
+        { name:"Stone Golem", special:"crushes you!" },{ name:"Cave Troll", special:"ground smash!" },
+        { name:"Shadow Wraith", special:"drains your life!" },{ name:"Basilisk", special:"petrifies! DEF-2 2 turns" }
       ],
       ruins: [
-        { name:"Skeleton Knight",  special:null },
-        { name:"Cursed Mage",      special:"Arcane Burst!" },
-        { name:"Lich",             special:"reanimates! +15 HP" },
-        { name:"Death Knight",     special:"Soul Rend — ignores DEF!" },
-        { name:"BOSS: The Dread Knight",   isBoss:true, special:"Death Cleave!", phases:["Dread Knight — Berserker Rage! ATK +6","Dread Knight — Death Shroud! DEF +5"] },
-        { name:"BOSS: Archlich Mortavian", isBoss:true, special:"Soul Shatter!",  phases:["Mortavian ascends — Lich Form! Specials more frequent.","Mortavian — Void Rift! ATK +8"] }
+        { name:"Skeleton Knight", special:null },{ name:"Cursed Mage", special:"Arcane Burst!" },
+        { name:"Lich", special:"reanimates! +15 HP" },{ name:"Death Knight", special:"Soul Rend — ignores DEF!" },
+        { name:"BOSS: The Dread Knight", isBoss:true, special:"Death Cleave!", phases:["Dread Knight — Berserker Rage! ATK +6","Dread Knight — Death Shroud! DEF +5"] },
+        { name:"BOSS: Archlich Mortavian", isBoss:true, special:"Soul Shatter!", phases:["Mortavian ascends — Lich Form! Specials more frequent.","Mortavian — Void Rift! ATK +8"] }
       ]
     },
     hard: {
       forest: [
-        { name:"Goblin Scout",  special:null },
-        { name:"Rabid Wolf",    special:"lunges at you!" },
-        { name:"Orc Raider",    special:"rages!" },
-        { name:"Forest Witch",  special:"hexes! ATK-2 2 turns" },
-        { name:"Forest Hydra",  special:"regenerates! +8 HP" }
+        { name:"Goblin Scout", special:null },{ name:"Rabid Wolf", special:"lunges at you!" },
+        { name:"Orc Raider", special:"rages!" },{ name:"Forest Witch", special:"hexes! ATK-2 2 turns" },
+        { name:"Forest Hydra", special:"regenerates! +8 HP" }
       ],
       cave: [
-        { name:"Giant Bat",     special:null },
-        { name:"Stone Golem",   special:"crushes you!" },
-        { name:"Cave Troll",    special:"shockwave!" },
-        { name:"Shadow Wraith", special:"drains life!" },
-        { name:"Basilisk",      special:"petrifies! DEF-2 2 turns" }
+        { name:"Giant Bat", special:null },{ name:"Stone Golem", special:"crushes you!" },
+        { name:"Cave Troll", special:"shockwave!" },{ name:"Shadow Wraith", special:"drains life!" },
+        { name:"Basilisk", special:"petrifies! DEF-2 2 turns" }
       ],
       ruins: [
-        { name:"Skeleton Knight",  special:null },
-        { name:"Cursed Mage",      special:"Arcane Burst!" },
-        { name:"Lich",             special:"reanimates! +15 HP" },
-        { name:"Death Knight",     special:"Soul Rend! Ignores DEF" },
-        { name:"BOSS: The Dread Knight",   isBoss:true, special:"Death Cleave!", phases:["Dread Knight — Berserker Rage! ATK rises.","Dread Knight — Death Shroud! DEF rises."] },
-        { name:"BOSS: Archlich Mortavian", isBoss:true, special:"Soul Shatter!",  phases:["Mortavian ascends! All specials more frequent.","Mortavian — Void Rift! ATK surges."] }
+        { name:"Skeleton Knight", special:null },{ name:"Cursed Mage", special:"Arcane Burst!" },
+        { name:"Lich", special:"reanimates! +15 HP" },{ name:"Death Knight", special:"Soul Rend! Ignores DEF" },
+        { name:"BOSS: The Dread Knight", isBoss:true, special:"Death Cleave!", phases:["Dread Knight — Berserker Rage! ATK rises.","Dread Knight — Death Shroud! DEF rises."] },
+        { name:"BOSS: Archlich Mortavian", isBoss:true, special:"Soul Shatter!", phases:["Mortavian ascends! All specials more frequent.","Mortavian — Void Rift! ATK surges."] }
       ]
     }
   }
@@ -422,72 +973,53 @@ es: {
   enemies: {
     easy: {
       forest: [
-        { name:"Explorador Goblin", special:null },
-        { name:"Lobo",              special:null },
-        { name:"Asaltante Orco",    special:null },
-        { name:"Bruja del Bosque",  special:"¡te maldice!" }
+        { name:"Explorador Goblin", special:null },{ name:"Lobo", special:null },
+        { name:"Asaltante Orco", special:null },{ name:"Bruja del Bosque", special:"¡te maldice!" }
       ],
       cave: [
-        { name:"Murciélago Gigante", special:null },
-        { name:"Gólem de Piedra",    special:null },
-        { name:"Trol de Cueva",      special:"¡golpe sísmico!" },
-        { name:"Espectro Sombra",    special:"¡drena tu vida!" }
+        { name:"Murciélago Gigante", special:null },{ name:"Gólem de Piedra", special:null },
+        { name:"Trol de Cueva", special:"¡golpe sísmico!" },{ name:"Espectro Sombra", special:"¡drena tu vida!" }
       ],
       ruins: [
-        { name:"Caballero Esqueleto",         special:null },
-        { name:"Mago Maldito",                special:"¡explosión arcana!" },
-        { name:"Liche",                       special:"¡se reanima! +10 HP" },
-        { name:"JEFE: El Caballero Temido",   isBoss:true, special:"¡golpe demoledor!" },
-        { name:"JEFE: Archliche Mortavian",   isBoss:true, special:"¡fragmenta tu alma!" }
+        { name:"Caballero Esqueleto", special:null },{ name:"Mago Maldito", special:"¡explosión arcana!" },
+        { name:"Liche", special:"¡se reanima! +10 HP" },
+        { name:"JEFE: El Caballero Temido", isBoss:true, special:"¡golpe demoledor!" },
+        { name:"JEFE: Archliche Mortavian", isBoss:true, special:"¡fragmenta tu alma!" }
       ]
     },
     normal: {
       forest: [
-        { name:"Explorador Goblin",  special:null },
-        { name:"Lobo Salvaje",       special:null },
-        { name:"Bandido",            special:"¡te golpea a traición!" },
-        { name:"Asaltante Orco",     special:"¡entra en furia!" },
-        { name:"Bruja del Bosque",   special:"¡te maldice! ATK-2 2 turnos" },
-        { name:"Hidra del Bosque",   special:"¡se regenera! +8 HP" }
+        { name:"Explorador Goblin", special:null },{ name:"Lobo Salvaje", special:null },
+        { name:"Bandido", special:"¡te golpea a traición!" },{ name:"Asaltante Orco", special:"¡entra en furia!" },
+        { name:"Bruja del Bosque", special:"¡te maldice! ATK-2 2 turnos" },{ name:"Hidra del Bosque", special:"¡se regenera! +8 HP" }
       ],
       cave: [
-        { name:"Murciélago Gigante", special:null },
-        { name:"Enjambre de Ratas",  special:null },
-        { name:"Gólem de Piedra",    special:"¡te aplasta!" },
-        { name:"Trol de Cueva",      special:"¡golpe al suelo!" },
-        { name:"Espectro Sombra",    special:"¡drena tu vida!" },
-        { name:"Basilisco",          special:"¡te petrifica! DEF-2 2 turnos" }
+        { name:"Murciélago Gigante", special:null },{ name:"Enjambre de Ratas", special:null },
+        { name:"Gólem de Piedra", special:"¡te aplasta!" },{ name:"Trol de Cueva", special:"¡golpe al suelo!" },
+        { name:"Espectro Sombra", special:"¡drena tu vida!" },{ name:"Basilisco", special:"¡te petrifica! DEF-2 2 turnos" }
       ],
       ruins: [
-        { name:"Caballero Esqueleto",      special:null },
-        { name:"Mago Maldito",             special:"¡Explosión Arcana!" },
-        { name:"Liche",                    special:"¡se reanima! +15 HP" },
-        { name:"Caballero de la Muerte",   special:"¡Desgarrar Alma — ignora DEF!" },
-        { name:"JEFE: El Caballero Temido", isBoss:true, special:"¡Tajo Mortal!",       phases:["¡El Caballero Temido — Furia Berserker! ATK +6","¡El Caballero Temido — Sudario de Muerte! DEF +5"] },
-        { name:"JEFE: Archliche Mortavian", isBoss:true, special:"¡Fragmentar Alma!",   phases:["¡Mortavian asciende — Forma Liche!","¡Mortavian — Fisura del Vacío! ATK +8"] }
+        { name:"Caballero Esqueleto", special:null },{ name:"Mago Maldito", special:"¡Explosión Arcana!" },
+        { name:"Liche", special:"¡se reanima! +15 HP" },{ name:"Caballero de la Muerte", special:"¡Desgarrar Alma — ignora DEF!" },
+        { name:"JEFE: El Caballero Temido", isBoss:true, special:"¡Tajo Mortal!", phases:["¡El Caballero Temido — Furia Berserker! ATK +6","¡El Caballero Temido — Sudario de Muerte! DEF +5"] },
+        { name:"JEFE: Archliche Mortavian", isBoss:true, special:"¡Fragmentar Alma!", phases:["¡Mortavian asciende — Forma Liche!","¡Mortavian — Fisura del Vacío! ATK +8"] }
       ]
     },
     hard: {
       forest: [
-        { name:"Explorador Goblin", special:null },
-        { name:"Lobo Rabioso",      special:"¡te embiste!" },
-        { name:"Asaltante Orco",    special:"¡entra en furia!" },
-        { name:"Bruja del Bosque",  special:"¡maldice! ATK-2 2 turnos" },
-        { name:"Hidra del Bosque",  special:"¡se regenera! +8 HP" }
+        { name:"Explorador Goblin", special:null },{ name:"Lobo Rabioso", special:"¡te embiste!" },
+        { name:"Asaltante Orco", special:"¡entra en furia!" },{ name:"Bruja del Bosque", special:"¡maldice! ATK-2 2 turnos" },
+        { name:"Hidra del Bosque", special:"¡se regenera! +8 HP" }
       ],
       cave: [
-        { name:"Murciélago Gigante", special:null },
-        { name:"Gólem de Piedra",    special:"¡te aplasta!" },
-        { name:"Trol de Cueva",      special:"¡onda de choque!" },
-        { name:"Espectro Sombra",    special:"¡drena tu fuerza vital!" },
-        { name:"Basilisco",          special:"¡te petrifica! DEF-2 2 turnos" }
+        { name:"Murciélago Gigante", special:null },{ name:"Gólem de Piedra", special:"¡te aplasta!" },
+        { name:"Trol de Cueva", special:"¡onda de choque!" },{ name:"Espectro Sombra", special:"¡drena tu fuerza vital!" },
+        { name:"Basilisco", special:"¡te petrifica! DEF-2 2 turnos" }
       ],
       ruins: [
-        { name:"Caballero Esqueleto",     special:null },
-        { name:"Mago Maldito",            special:"¡Explosión Arcana!" },
-        { name:"Liche",                   special:"¡se reanima! +15 HP" },
-        { name:"Caballero de la Muerte",  special:"¡Desgarrar Alma! Ignora DEF" },
-        { name:"JEFE: El Caballero Temido", isBoss:true, special:"¡Tajo Mortal!",     phases:["¡El Caballero Temido — Furia Berserker! ATK sube.","¡El Caballero Temido — Sudario de Muerte! DEF sube."] },
+        { name:"Caballero Esqueleto", special:null },{ name:"Mago Maldito", special:"¡Explosión Arcana!" },
+        { name:"Liche", special:"¡se reanima! +15 HP" },{ name:"Caballero de la Muerte", special:"¡Desgarrar Alma! Ignora DEF" },
+        { name:"JEFE: El Caballero Temido", isBoss:true, special:"¡Tajo Mortal!", phases:["¡El Caballero Temido — Furia Berserker! ATK sube.","¡El Caballero Temido — Sudario de Muerte! DEF sube."] },
         { name:"JEFE: Archliche Mortavian", isBoss:true, special:"¡Fragmentar Alma!", phases:["¡Mortavian asciende! Todos los especiales más frecuentes.","¡Mortavian — Fisura del Vacío! ATK se dispara."] }
       ]
     }
@@ -557,103 +1089,71 @@ ca: {
   enemies: {
     easy: {
       forest: [
-        { name:"Explorador Goblin", special:null },
-        { name:"Llop",              special:null },
-        { name:"Assaltant Orc",     special:null },
-        { name:"Bruixa del Bosc",   special:"et malda!" }
+        { name:"Explorador Goblin", special:null },{ name:"Llop", special:null },
+        { name:"Assaltant Orc", special:null },{ name:"Bruixa del Bosc", special:"et malda!" }
       ],
       cave: [
-        { name:"Ratpenat Gegant",   special:null },
-        { name:"Gòlem de Pedra",    special:null },
-        { name:"Trol de Cova",      special:"cop sísmic!" },
-        { name:"Espectre Ombra",    special:"et drenat la vida!" }
+        { name:"Ratpenat Gegant", special:null },{ name:"Gòlem de Pedra", special:null },
+        { name:"Trol de Cova", special:"cop sísmic!" },{ name:"Espectre Ombra", special:"et drenat la vida!" }
       ],
       ruins: [
-        { name:"Cavaller Esquelet",       special:null },
-        { name:"Mag Maleït",              special:"Esclat Arcà!" },
-        { name:"Lig",                     special:"es reanima! +10 HP" },
-        { name:"CAP: El Cavaller Temut",  isBoss:true, special:"Tall Mortal — cop demolidor!" },
-        { name:"CAP: Arxilig Mortavian",  isBoss:true, special:"Trencament d'ànima!" }
+        { name:"Cavaller Esquelet", special:null },{ name:"Mag Maleït", special:"Esclat Arcà!" },
+        { name:"Lig", special:"es reanima! +10 HP" },
+        { name:"CAP: El Cavaller Temut", isBoss:true, special:"Tall Mortal — cop demolidor!" },
+        { name:"CAP: Arxilig Mortavian", isBoss:true, special:"Trencament d'ànima!" }
       ]
     },
     normal: {
       forest: [
-        { name:"Explorador Goblin",  special:null },
-        { name:"Llop Salvatge",      special:null },
-        { name:"Bandoler",           special:"et cop traïdorament!" },
-        { name:"Assaltant Orc",      special:"entra en fúria!" },
-        { name:"Bruixa del Bosc",    special:"et malda! ATK-2 2 torns" },
-        { name:"Hidra del Bosc",     special:"es regenera! +8 HP" }
+        { name:"Explorador Goblin", special:null },{ name:"Llop Salvatge", special:null },
+        { name:"Bandoler", special:"et cop traïdorament!" },{ name:"Assaltant Orc", special:"entra en fúria!" },
+        { name:"Bruixa del Bosc", special:"et malda! ATK-2 2 torns" },{ name:"Hidra del Bosc", special:"es regenera! +8 HP" }
       ],
       cave: [
-        { name:"Ratpenat Gegant",    special:null },
-        { name:"Eixam de Rates",     special:null },
-        { name:"Gòlem de Pedra",     special:"t'aixafa!" },
-        { name:"Trol de Cova",       special:"cop a terra!" },
-        { name:"Espectre Ombra",     special:"et drenat la vida!" },
-        { name:"Basilisc",           special:"et petrifica! DEF-2 2 torns" }
+        { name:"Ratpenat Gegant", special:null },{ name:"Eixam de Rates", special:null },
+        { name:"Gòlem de Pedra", special:"t'aixafa!" },{ name:"Trol de Cova", special:"cop a terra!" },
+        { name:"Espectre Ombra", special:"et drenat la vida!" },{ name:"Basilisc", special:"et petrifica! DEF-2 2 torns" }
       ],
       ruins: [
-        { name:"Cavaller Esquelet",       special:null },
-        { name:"Mag Maleït",              special:"Esclat Arcà!" },
-        { name:"Lig",                     special:"es reanima! +15 HP" },
-        { name:"Cavaller de la Mort",     special:"Ànima Esberlada — ignora DEF!" },
-        { name:"CAP: El Cavaller Temut",  isBoss:true, special:"Tall Mortal!",           phases:["El Cavaller Temut — Fúria Berserker! ATK +6","El Cavaller Temut — Sudari Mortal! DEF +5"] },
-        { name:"CAP: Arxilig Mortavian",  isBoss:true, special:"Trencament d'ànima!",   phases:["Mortavian ascendeix — Forma Lig! Especials més freqüents.","Mortavian — Escletxa del Buit! ATK +8"] }
+        { name:"Cavaller Esquelet", special:null },{ name:"Mag Maleït", special:"Esclat Arcà!" },
+        { name:"Lig", special:"es reanima! +15 HP" },{ name:"Cavaller de la Mort", special:"Ànima Esberlada — ignora DEF!" },
+        { name:"CAP: El Cavaller Temut", isBoss:true, special:"Tall Mortal!", phases:["El Cavaller Temut — Fúria Berserker! ATK +6","El Cavaller Temut — Sudari Mortal! DEF +5"] },
+        { name:"CAP: Arxilig Mortavian", isBoss:true, special:"Trencament d'ànima!", phases:["Mortavian ascendeix — Forma Lig! Especials més freqüents.","Mortavian — Escletxa del Buit! ATK +8"] }
       ]
     },
     hard: {
       forest: [
-        { name:"Explorador Goblin", special:null },
-        { name:"Llop Rabiós",       special:"et embesteix!" },
-        { name:"Assaltant Orc",     special:"entra en fúria!" },
-        { name:"Bruixa del Bosc",   special:"malda! ATK-2 2 torns" },
-        { name:"Hidra del Bosc",    special:"es regenera! +8 HP" }
+        { name:"Explorador Goblin", special:null },{ name:"Llop Rabiós", special:"et embesteix!" },
+        { name:"Assaltant Orc", special:"entra en fúria!" },{ name:"Bruixa del Bosc", special:"malda! ATK-2 2 torns" },
+        { name:"Hidra del Bosc", special:"es regenera! +8 HP" }
       ],
       cave: [
-        { name:"Ratpenat Gegant",   special:null },
-        { name:"Gòlem de Pedra",    special:"t'aixafa!" },
-        { name:"Trol de Cova",      special:"ona de xoc!" },
-        { name:"Espectre Ombra",    special:"et drenat la força vital!" },
-        { name:"Basilisc",          special:"et petrifica! DEF-2 2 torns" }
+        { name:"Ratpenat Gegant", special:null },{ name:"Gòlem de Pedra", special:"t'aixafa!" },
+        { name:"Trol de Cova", special:"ona de xoc!" },{ name:"Espectre Ombra", special:"et drenat la força vital!" },
+        { name:"Basilisc", special:"et petrifica! DEF-2 2 torns" }
       ],
       ruins: [
-        { name:"Cavaller Esquelet",      special:null },
-        { name:"Mag Maleït",             special:"Esclat Arcà!" },
-        { name:"Lig",                    special:"es reanima! +15 HP" },
-        { name:"Cavaller de la Mort",    special:"Ànima Esberlada! Ignora DEF" },
-        { name:"CAP: El Cavaller Temut", isBoss:true, special:"Tall Mortal!",           phases:["El Cavaller Temut — Fúria Berserker! ATK puja.","El Cavaller Temut — Sudari Mortal! DEF puja."] },
-        { name:"CAP: Arxilig Mortavian", isBoss:true, special:"Trencament d'ànima!",   phases:["Mortavian ascendeix! Tots els especials més freqüents.","Mortavian — Escletxa del Buit! ATK s'accelera."] }
+        { name:"Cavaller Esquelet", special:null },{ name:"Mag Maleït", special:"Esclat Arcà!" },
+        { name:"Lig", special:"es reanima! +15 HP" },{ name:"Cavaller de la Mort", special:"Ànima Esberlada! Ignora DEF" },
+        { name:"CAP: El Cavaller Temut", isBoss:true, special:"Tall Mortal!", phases:["El Cavaller Temut — Fúria Berserker! ATK puja.","El Cavaller Temut — Sudari Mortal! DEF puja."] },
+        { name:"CAP: Arxilig Mortavian", isBoss:true, special:"Trencament d'ànima!", phases:["Mortavian ascendeix! Tots els especials més freqüents.","Mortavian — Escletxa del Buit! ATK s'accelera."] }
       ]
     }
   }
 }
 
-}; // end LOCALES
+};
 
-// ─────────────────────────────────────────────────────────────────────────────
-// i18n ENGINE
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── i18n ENGINE ───
 let LANG = 'en';
-
-// Interpolate named placeholders: i18n("Hello {name}!", {name:"World"}) → "Hello World!"
 function i18n(str, vars) {
   if (!str) return '';
   if (!vars) return str;
   return str.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
 }
-
-// Shorthand: current locale object
 function t() { return LOCALES[LANG]; }
+function locs() { return t().locations; }
 
-// Look up a nested key like "combat.hitEnemy" with dot notation (for debugging)
-function tget(path) {
-  return path.split('.').reduce((obj, k) => obj && obj[k], t());
-}
-
-// Validate all locales against EN source — logs warnings for missing keys.
-// Runs once on startup, harmless in production.
 function validateLocales() {
   function flatKeys(obj, prefix) {
     return Object.entries(obj).flatMap(([k, v]) => {
@@ -667,54 +1167,39 @@ function validateLocales() {
       const val = k.split('.').reduce((o, key) => o && o[key], LOCALES[lang]);
       return val === undefined;
     });
-    if (missing.length) console.warn(`[i18n] "${lang}" is missing ${missing.length} key(s):`, missing);
-    else console.info(`[i18n] "${lang}" OK — all keys present.`);
+    if (missing.length) console.warn(`[i18n] "${lang}" missing ${missing.length} key(s):`, missing);
+    else console.info(`[i18n] "${lang}" OK`);
   });
 }
 
-// Enemy text lookup by position index (matches game data order)
 function ename(e) {
   const loc = LOCALES[LANG].enemies;
   const diff = DIFF === 'balanced' ? 'normal' : DIFF;
   const area = e._area || 'forest';
-  const idx  = e._idx;
-  const entry = loc[diff] && loc[diff][area] && loc[diff][area][idx];
+  const entry = loc[diff] && loc[diff][area] && loc[diff][area][e._idx];
   return (entry && entry.name) || e._nameEn || '???';
 }
-
 function emsg(e) {
   const loc = LOCALES[LANG].enemies;
   const diff = DIFF === 'balanced' ? 'normal' : DIFF;
-  const area = e._area || 'forest';
-  const idx  = e._idx;
-  const entry = loc[diff] && loc[diff][area] && loc[diff][area][idx];
-  return (entry && entry.special) || (e.special && e.special.msg && e.special.msg.en) || '';
+  const entry = loc[diff] && loc[diff][e._area] && loc[diff][e._area][e._idx];
+  return (entry && entry.special) || '';
 }
-
 function ephase(e, phaseIdx) {
   const loc = LOCALES[LANG].enemies;
   const diff = DIFF === 'balanced' ? 'normal' : DIFF;
-  const area = e._area || 'forest';
-  const idx  = e._idx;
-  const entry = loc[diff] && loc[diff][area] && loc[diff][area][idx];
+  const entry = loc[diff] && loc[diff][e._area] && loc[diff][e._area][e._idx];
   return (entry && entry.phases && entry.phases[phaseIdx]) || '';
 }
 
-function locs() { return t().locations; }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GAME CONFIG & DATA
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── GAME CONFIG ───
 let DIFF = 'balanced';
 let S = {};
-
 const CONFIGS = {
   easy:     { hp:30, atk:6, def:2, gold:10, hpPerLevel:8, atkPerLevel:1, restCost:0,  fleeFail:0.4, xpBase:30, xpExtra:0,  potionHeal:15 },
   balanced: { hp:22, atk:5, def:1, gold:5,  hpPerLevel:6, atkPerLevel:1, restCost:6,  fleeFail:0.6, xpBase:40, xpExtra:10, potionHeal:18 },
   hard:     { hp:22, atk:5, def:1, gold:5,  hpPerLevel:6, atkPerLevel:1, restCost:6,  fleeFail:0.6, xpBase:40, xpExtra:10, potionHeal:18 }
 };
-
 function xpForLevel(lvl) { const c = CONFIGS[DIFF]; return c.xpBase * lvl + (c.xpExtra || 0); }
 
 const ABILITIES = [
@@ -732,9 +1217,6 @@ const ABILITIES = [
     use(e){ const d=Math.round(S.atk*2.8+rnd(10)); e.hp-=d; print(i18n(t().abilities.meteor.log,{dmg:d}),"al"); } }
 ];
 
-// Enemy game data — names/specials are now purely game mechanics.
-// Display text comes from LOCALES[lang].enemies via ename()/emsg()/ephase().
-// _area and _idx are stamped on each enemy at spawn time to enable locale lookup.
 const ENEMIES_EASY = {
   forest:[
     { _nameEn:"Goblin Scout", hp:10,maxHp:10,atk:4,def:0,minLvl:1,reward:{gold:5,xp:15} },
@@ -756,7 +1238,6 @@ const ENEMIES_EASY = {
     { _nameEn:"BOSS: Archlich Mortavian",isBoss:true,hp:100,maxHp:100,atk:22,def:2,minLvl:6,reward:{gold:120,xp:300},special:{chance:.5,dmgMult:2,lifeSteal:true} }
   ]
 };
-
 const ENEMIES_NORMAL = {
   forest:[
     { _nameEn:"Goblin Scout", hp:10,maxHp:10,atk:5,def:0,minLvl:1,maxLvl:3,weight:4,reward:{gold:4,xp:12} },
@@ -775,19 +1256,14 @@ const ENEMIES_NORMAL = {
     { _nameEn:"Basilisk",       hp:55,maxHp:55,atk:16,def:3,minLvl:5,weight:1,reward:{gold:30,xp:82},special:{chance:.28,debuff:{stat:"def",amt:2,turns:2}} }
   ],
   ruins:[
-    { _nameEn:"Skeleton Knight",  hp:38,maxHp:38,atk:12,def:3,minLvl:5,maxLvl:6,weight:3,reward:{gold:20,xp:58} },
-    { _nameEn:"Cursed Mage",      hp:30,maxHp:30,atk:19,def:0,minLvl:5,weight:2,reward:{gold:25,xp:70},special:{chance:.4,dmgMult:2.0} },
-    { _nameEn:"Lich",             hp:55,maxHp:55,atk:17,def:2,minLvl:5,weight:2,reward:{gold:36,xp:90},special:{chance:.25,heal:15} },
-    { _nameEn:"Death Knight",     hp:65,maxHp:65,atk:19,def:4,minLvl:6,weight:2,reward:{gold:42,xp:102},special:{chance:.35,dmgMult:1.6,ignoresDef:true} },
-    { _nameEn:"BOSS: The Dread Knight",   isBoss:true,hp:95,maxHp:95,atk:22,def:5,minLvl:5,weight:1,reward:{gold:85,xp:220},
-      phases:[{threshold:.6,atkBoost:6},{threshold:.3,defBoost:5}],
-      special:{chance:.4,dmgMult:2.5} },
-    { _nameEn:"BOSS: Archlich Mortavian", isBoss:true,hp:130,maxHp:130,atk:26,def:3,minLvl:6,weight:1,reward:{gold:130,xp:350},
-      phases:[{threshold:.7,specialBoost:.2},{threshold:.4,atkBoost:8}],
-      special:{chance:.45,dmgMult:2.2,lifeSteal:true} }
+    { _nameEn:"Skeleton Knight", hp:38,maxHp:38,atk:12,def:3,minLvl:5,maxLvl:6,weight:3,reward:{gold:20,xp:58} },
+    { _nameEn:"Cursed Mage",     hp:30,maxHp:30,atk:19,def:0,minLvl:5,weight:2,reward:{gold:25,xp:70},special:{chance:.4,dmgMult:2.0} },
+    { _nameEn:"Lich",            hp:55,maxHp:55,atk:17,def:2,minLvl:5,weight:2,reward:{gold:36,xp:90},special:{chance:.25,heal:15} },
+    { _nameEn:"Death Knight",    hp:65,maxHp:65,atk:19,def:4,minLvl:6,weight:2,reward:{gold:42,xp:102},special:{chance:.35,dmgMult:1.6,ignoresDef:true} },
+    { _nameEn:"BOSS: The Dread Knight",   isBoss:true,hp:95,maxHp:95,atk:22,def:5,minLvl:5,weight:1,reward:{gold:85,xp:220},phases:[{threshold:.6,atkBoost:6},{threshold:.3,defBoost:5}],special:{chance:.4,dmgMult:2.5} },
+    { _nameEn:"BOSS: Archlich Mortavian", isBoss:true,hp:130,maxHp:130,atk:26,def:3,minLvl:6,weight:1,reward:{gold:130,xp:350},phases:[{threshold:.7,specialBoost:.2},{threshold:.4,atkBoost:8}],special:{chance:.45,dmgMult:2.2,lifeSteal:true} }
   ]
 };
-
 const ENEMIES_HARD = {
   forest:[
     { _nameEn:"Goblin Scout",  hp:12,maxHp:12,atk:6,def:0,minLvl:1,reward:{gold:4,xp:12} },
@@ -808,12 +1284,8 @@ const ENEMIES_HARD = {
     { _nameEn:"Cursed Mage",      hp:30,maxHp:30,atk:20,def:0,minLvl:4,reward:{gold:25,xp:68},special:{chance:.45,dmgMult:2.0} },
     { _nameEn:"Lich",             hp:55,maxHp:55,atk:17,def:2,minLvl:5,reward:{gold:36,xp:90},special:{chance:.25,heal:15} },
     { _nameEn:"Death Knight",     hp:65,maxHp:65,atk:19,def:4,minLvl:5,reward:{gold:42,xp:100},special:{chance:.35,dmgMult:1.6,ignoresDef:true} },
-    { _nameEn:"BOSS: The Dread Knight",   isBoss:true,hp:95,maxHp:95,atk:22,def:5,minLvl:5,reward:{gold:85,xp:220},
-      phases:[{threshold:.6,atkBoost:6},{threshold:.3,defBoost:5}],
-      special:{chance:.45,dmgMult:2.5} },
-    { _nameEn:"BOSS: Archlich Mortavian", isBoss:true,hp:130,maxHp:130,atk:26,def:3,minLvl:6,reward:{gold:130,xp:350},
-      phases:[{threshold:.7,specialBoost:.2},{threshold:.4,atkBoost:8}],
-      special:{chance:.5,dmgMult:2.2,lifeSteal:true} }
+    { _nameEn:"BOSS: The Dread Knight",   isBoss:true,hp:95,maxHp:95,atk:22,def:5,minLvl:5,reward:{gold:85,xp:220},phases:[{threshold:.6,atkBoost:6},{threshold:.3,defBoost:5}],special:{chance:.45,dmgMult:2.5} },
+    { _nameEn:"BOSS: Archlich Mortavian", isBoss:true,hp:130,maxHp:130,atk:26,def:3,minLvl:6,reward:{gold:130,xp:350},phases:[{threshold:.7,specialBoost:.2},{threshold:.4,atkBoost:8}],special:{chance:.5,dmgMult:2.2,lifeSteal:true} }
   ]
 };
 
@@ -826,10 +1298,7 @@ const SHOP_BASE = [
 ];
 const SHOP_COSTS = { easy:[8,15,12,25,28], balanced:[10,18,16,30,35], hard:[10,18,16,30,35] };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── HELPERS ───
 function getEnemies() { return DIFF==='easy'?ENEMIES_EASY:DIFF==='balanced'?ENEMIES_NORMAL:ENEMIES_HARD; }
 function rnd(n) { return Math.floor(Math.random()*n); }
 function pickEnemy(pool) {
@@ -846,22 +1315,17 @@ function print(msg, cls="") {
   logEl.appendChild(p); logEl.scrollTop=logEl.scrollHeight;
 }
 function sep() { print(""); }
-
 function applyDebuff(d){ S.debuffs.push({...d}); S[d.stat]-=d.amt; }
 function tickDebuffs(){
   S.debuffs.forEach(d=>{ d.turns--; if(d.turns<=0) S[d.stat]+=d.amt; });
-  S.debuffs=S.debuffs.filter(d=>d.turns>0);
-  renderDebuffs();
+  S.debuffs=S.debuffs.filter(d=>d.turns>0); renderDebuffs();
 }
 function renderDebuffs(){
   const el=document.getElementById("debuffs");
   el.textContent=S.debuffs.length ? S.debuffs.map(d=>d.stat.toUpperCase()+"-"+d.amt+" ("+d.turns+"t)").join("  ") : "";
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// UI UPDATES
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── UI UPDATES ───
 function updateStats() {
   document.getElementById("s-hp").textContent=S.hp+"/"+S.maxHp;
   document.getElementById("s-atk").textContent=S.atk;
@@ -874,7 +1338,7 @@ function updateStats() {
   const pct=Math.max(0,S.hp/S.maxHp*100);
   const hb=document.getElementById("hp-bar");
   hb.style.width=pct+"%";
-  hb.style.background=pct>50?"#3B6D11":pct>25?"#BA7517":"#A32D2D";
+  hb.style.background=pct>50?"#5DBB42":pct>25?"#C9922A":"#E05555";
   const needed=xpForLevel(S.level);
   document.getElementById("xp-bar").style.width=Math.min(100,S.xp/needed*100)+"%";
   document.getElementById("xp-txt").textContent=S.xp+"/"+needed;
@@ -888,7 +1352,6 @@ function updateEnemyBlock() {
   eb.className=S.enemy.isBoss?"boss":"";
   document.getElementById("e-star").style.display=S.enemy.isBoss?"inline":"none";
   document.getElementById("e-name").textContent=ename(S.enemy);
-  // "stunned" status label — now fully translated
   const stunLbl = S.enemy.stunTurns>0
     ? i18n(t().combat.stunned, {enemy:"", turns:S.enemy.stunTurns}).replace(/^\s*[→]\s*/,"").trim()
     : "";
@@ -902,10 +1365,9 @@ function checkBossPhase() {
   if(!S.enemy||!S.enemy.phases) return;
   S.enemy.phases.forEach((ph, idx) => {
     if(!ph.triggered && S.enemy.hp/S.enemy.maxHp<=ph.threshold) {
-      ph.triggered=true;
-      print(ephase(S.enemy, idx),"bl");
-      if(ph.atkBoost)   S.enemy.atk+=ph.atkBoost;
-      if(ph.defBoost)   S.enemy.def=(S.enemy.def||0)+ph.defBoost;
+      ph.triggered=true; print(ephase(S.enemy, idx),"bl");
+      if(ph.atkBoost)    S.enemy.atk+=ph.atkBoost;
+      if(ph.defBoost)    S.enemy.def=(S.enemy.def||0)+ph.defBoost;
       if(ph.specialBoost) S.enemy.special.chance=Math.min(.9,S.enemy.special.chance+ph.specialBoost);
     }
   });
@@ -918,10 +1380,7 @@ function mkBtn(label, fn, cls, full) {
   b.innerHTML=label; b.onclick=fn; return b;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ABILITIES
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── ABILITIES ───
 function renderAbilities() {
   const row=document.getElementById("abilities-row"); row.innerHTML="";
   const avail=ABILITIES.filter(a=>S.level>=a.unlockLvl);
@@ -938,8 +1397,7 @@ function renderAbilities() {
 
 function useAbility(ab) {
   if(!S.enemy) return;
-  S.abilityCDs[ab.id]=ab.cd[DIFF];
-  ab.use(S.enemy);
+  S.abilityCDs[ab.id]=ab.cd[DIFF]; ab.use(S.enemy);
   checkBossPhase(); updateEnemyBlock(); updateStats();
   if(S.enemy&&S.enemy.hp<=0){ enemyDied(); return; }
   if(S.enemy) enemyAttacks();
@@ -950,10 +1408,7 @@ function useAbility(ab) {
 
 function tickCDs(){ Object.keys(S.abilityCDs).forEach(k=>{ if(S.abilityCDs[k]>0) S.abilityCDs[k]--; }); }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// EXPLORE
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── EXPLORE ───
 function renderExplore() {
   S.phase="explore";
   document.getElementById("abilities-row").style.display="none";
@@ -997,10 +1452,9 @@ function encounter(bossOnly) {
     : pool.filter(e=>!e.isBoss&&S.level>=e.minLvl&&(e.maxLvl===undefined||S.level<=e.maxLvl));
   if(!pool.length){ print(t().combat.noEnemies,"mu"); return; }
   const tmpl=pickEnemy(pool);
-  // Stamp area and index for locale lookup
   S.enemy=JSON.parse(JSON.stringify(tmpl));
   S.enemy._area=S.location;
-  S.enemy._idx=pool.indexOf(tmpl); // index in the original typed pool
+  S.enemy._idx=pool.indexOf(tmpl);
   S.enemy._nameEn=tmpl._nameEn;
   sep();
   if(S.enemy.isBoss) print(i18n(t().combat.bossAppears,{name:ename(S.enemy)}),"bl");
@@ -1008,10 +1462,7 @@ function encounter(bossOnly) {
   updateEnemyBlock(); renderCombat();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COMBAT
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── COMBAT ───
 function renderCombat() {
   S.phase="combat"; renderAbilities();
   const act=document.getElementById("actions"); act.innerHTML="";
@@ -1044,10 +1495,7 @@ function enemyAttacks() {
   const sp=S.enemy.special;
   if(sp&&Math.random()<sp.chance){
     const msg=emsg(S.enemy);
-    if(sp.heal){
-      S.enemy.hp=Math.min(S.enemy.maxHp,S.enemy.hp+sp.heal);
-      print(ename(S.enemy)+" "+msg,"bl"); updateEnemyBlock(); return;
-    }
+    if(sp.heal){ S.enemy.hp=Math.min(S.enemy.maxHp,S.enemy.hp+sp.heal); print(ename(S.enemy)+" "+msg,"bl"); updateEnemyBlock(); return; }
     if(sp.debuff){ applyDebuff(sp.debuff); print(ename(S.enemy)+" "+msg,"bl"); renderDebuffs(); }
     if(sp.ignoresDef) dmg=Math.max(1,S.enemy.atk+rnd(4)-1);
     if(sp.dmgMult)    dmg=Math.round(dmg*sp.dmgMult);
@@ -1110,10 +1558,7 @@ function usePotion() {
   if(S.phase==="combat") renderCombat();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SHOP
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── SHOP ───
 function renderShop() {
   document.getElementById("abilities-row").style.display="none";
   const act=document.getElementById("actions"); act.innerHTML="";
@@ -1133,10 +1578,7 @@ function renderShop() {
   act.appendChild(mkBtn(t().actions.shopLeave,()=>renderExplore(),null,true));
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DEATH & RESTART
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── DEATH & RESTART ───
 function renderDead() {
   document.getElementById("abilities-row").style.display="none";
   document.getElementById("enemy-block").style.display="none";
@@ -1159,21 +1601,16 @@ function initState() {
     inventory:[],location:"crossroads",enemy:null,phase:"explore",abilityCDs:{},debuffs:[]});
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// LANGUAGE & SELECT SCREEN
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ─── LANGUAGE & SELECT ───
 function setLang(lang) {
   LANG=lang;
   document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
   document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add("active");
   const tx=t();
-  // UI chrome
   document.getElementById("logo-title").textContent=tx.ui.logoTitle;
   document.getElementById("logo-sub").textContent=tx.ui.logoSub;
   document.getElementById("lang-lbl").textContent=tx.ui.langLbl;
   document.getElementById("diff-lbl").textContent=tx.ui.diffLbl;
-  // Difficulty cards
   ['easy','balanced','hard'].forEach(d=>{
     const prefix={'easy':'d-easy','balanced':'d-bal','hard':'d-hard'}[d];
     document.getElementById(`${prefix}-tag`).textContent=tx.difficulty[d].tag;
@@ -1181,7 +1618,6 @@ function setLang(lang) {
     document.getElementById(`${prefix}-desc`).textContent=tx.difficulty[d].desc;
     document.getElementById(`${prefix}-stats`).innerHTML=tx.difficulty[d].stats.replace(/\n/g,"<br>");
   });
-  // Stat labels (always visible in game screen)
   document.getElementById("lbl-hp").textContent=tx.stats.hp;
   document.getElementById("lbl-atk").textContent=tx.stats.atk;
   document.getElementById("lbl-def").textContent=tx.stats.def;
@@ -1210,10 +1646,7 @@ function backToSelect() {
   S.enemy=null;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// BOOT
-// ─────────────────────────────────────────────────────────────────────────────
-
 validateLocales();
 setLang('en');
 </script>
+</html>
