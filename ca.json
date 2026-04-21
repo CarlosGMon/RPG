@@ -145,12 +145,18 @@
     }
   },
   "shop": {
+    "effectLabels": {
+      "addPotion": "+{value} HP en usar",
+      "permAtk":   "+{value} ATK",
+      "permDef":   "+{value} DEF",
+      "permMaxHp": "+{value} Max HP"
+    },
     "items": [
-      "Poció de Vida (+HP)",
-      "Espasa de Ferro (+2 ATK)",
-      "Escut de Torre (+2 DEF)",
-      "Tom de Vitalitat (+5 MaxHP)",
-      "Tom de Guerra (+3 ATK)"
+      "Poció de Vida",
+      "Espasa de Ferro",
+      "Escut de Torre",
+      "Tom de Vitalitat",
+      "Tom de Guerra"
     ]
   },
   "abilities": {
@@ -229,7 +235,7 @@
         },
         {
           "name": "Lig",
-          "special": "es reanima! +10 HP"
+          "special": "es reanima! +{value} HP"
         },
         {
           "name": "CAP: El Cavaller Temut",
@@ -263,11 +269,11 @@
         },
         {
           "name": "Bruixa del Bosc",
-          "special": "et malda! ATK-2 2 torns"
+          "special": "et malda! ATK-{value} 2 torns"
         },
         {
           "name": "Hidra del Bosc",
-          "special": "es regenera! +8 HP"
+          "special": "es regenera! +{value} HP"
         }
       ],
       "cave": [
@@ -293,7 +299,7 @@
         },
         {
           "name": "Basilisc",
-          "special": "et petrifica! DEF-2 2 torns"
+          "special": "et petrifica! DEF-{value} 2 torns"
         }
       ],
       "ruins": [
@@ -307,7 +313,7 @@
         },
         {
           "name": "Lig",
-          "special": "es reanima! +15 HP"
+          "special": "es reanima! +{value} HP"
         },
         {
           "name": "Cavaller de la Mort",
@@ -349,11 +355,11 @@
         },
         {
           "name": "Bruixa del Bosc",
-          "special": "malda! ATK-2 2 torns"
+          "special": "malda! ATK-{value} 2 torns"
         },
         {
           "name": "Hidra del Bosc",
-          "special": "es regenera! +8 HP"
+          "special": "es regenera! +{value} HP"
         }
       ],
       "cave": [
@@ -375,7 +381,7 @@
         },
         {
           "name": "Basilisc",
-          "special": "et petrifica! DEF-2 2 torns"
+          "special": "et petrifica! DEF-{value} 2 torns"
         }
       ],
       "ruins": [
@@ -389,7 +395,7 @@
         },
         {
           "name": "Lig",
-          "special": "es reanima! +15 HP"
+          "special": "es reanima! +{value} HP"
         },
         {
           "name": "Cavaller de la Mort",

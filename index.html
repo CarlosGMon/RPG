@@ -865,7 +865,15 @@ function ename(e) {
 }
 function emsg(e) {
   const entry = _elookup(e);
-  return (entry && entry.special) || '';
+  const raw = (entry && entry.special) || '';
+  if (!raw) return '';
+  const sp = e.special;
+  let value = '';
+  if (sp) {
+    if (sp.heal !== undefined)        value = sp.heal;
+    else if (sp.debuff !== undefined) value = sp.debuff.amt;
+  }
+  return raw.replace(/\{value\}/g, value);
 }
 function ephase(e, phaseIdx) {
   const entry = _elookup(e);
@@ -1189,7 +1197,12 @@ function renderShop() {
   getShopItems().forEach((item,i)=>{
     const cost=getShopCost(item);
     const itemName=t().shop.items[i];
-    const b=mkBtn(itemName+" ("+cost+"g)",()=>{
+    const effectLabels=t().shop.effectLabels||{};
+    const effectTpl=effectLabels[item.effect]||'';
+    const value=item.effect==='addPotion'?CONFIGS[DIFF].potionHeal:item.effectValue;
+    const effectStr=effectTpl?i18n(effectTpl,{value}):'';
+    const label=effectStr?itemName+' <span style="opacity:.55;font-size:.82em">('+effectStr+')</span>':itemName;
+    const b=mkBtn(label+' — '+cost+'g',()=>{
       if(S.gold<cost){ print(t().combat.notEnoughGold,"dmg"); return; }
       S.gold-=cost; applyShopItem(item);
       print(i18n(t().combat.boughtMsg,{item:itemName}),"ok");

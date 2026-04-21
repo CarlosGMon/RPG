@@ -145,12 +145,18 @@
     }
   },
   "shop": {
+    "effectLabels": {
+      "addPotion": "+{value} HP al usar",
+      "permAtk":   "+{value} ATK",
+      "permDef":   "+{value} DEF",
+      "permMaxHp": "+{value} Max HP"
+    },
     "items": [
-      "Poción de Vida (+HP)",
-      "Espada de Hierro (+2 ATK)",
-      "Escudo de Torre (+2 DEF)",
-      "Tomo de Vitalidad (+5 MaxHP)",
-      "Tomo de Guerra (+3 ATK)"
+      "Poción de Vida",
+      "Espada de Hierro",
+      "Escudo de Torre",
+      "Tomo de Vitalidad",
+      "Tomo de Guerra"
     ]
   },
   "abilities": {
@@ -229,7 +235,7 @@
         },
         {
           "name": "Liche",
-          "special": "¡se reanima! +10 HP"
+          "special": "¡se reanima! +{value} HP"
         },
         {
           "name": "JEFE: El Caballero Temido",
@@ -263,11 +269,11 @@
         },
         {
           "name": "Bruja del Bosque",
-          "special": "¡te maldice! ATK-2 2 turnos"
+          "special": "¡te maldice! ATK-{value} 2 turnos"
         },
         {
           "name": "Hidra del Bosque",
-          "special": "¡se regenera! +8 HP"
+          "special": "¡se regenera! +{value} HP"
         }
       ],
       "cave": [
@@ -293,7 +299,7 @@
         },
         {
           "name": "Basilisco",
-          "special": "¡te petrifica! DEF-2 2 turnos"
+          "special": "¡te petrifica! DEF-{value} 2 turnos"
         }
       ],
       "ruins": [
@@ -307,7 +313,7 @@
         },
         {
           "name": "Liche",
-          "special": "¡se reanima! +15 HP"
+          "special": "¡se reanima! +{value} HP"
         },
         {
           "name": "Caballero de la Muerte",
@@ -349,11 +355,11 @@
         },
         {
           "name": "Bruja del Bosque",
-          "special": "¡maldice! ATK-2 2 turnos"
+          "special": "¡maldice! ATK-{value} 2 turnos"
         },
         {
           "name": "Hidra del Bosque",
-          "special": "¡se regenera! +8 HP"
+          "special": "¡se regenera! +{value} HP"
         }
       ],
       "cave": [
@@ -375,7 +381,7 @@
         },
         {
           "name": "Basilisco",
-          "special": "¡te petrifica! DEF-2 2 turnos"
+          "special": "¡te petrifica! DEF-{value} 2 turnos"
         }
       ],
       "ruins": [
@@ -389,7 +395,7 @@
         },
         {
           "name": "Liche",
-          "special": "¡se reanima! +15 HP"
+          "special": "¡se reanima! +{value} HP"
         },
         {
           "name": "Caballero de la Muerte",
