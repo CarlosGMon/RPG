@@ -1,0 +1,63 @@
+{
+  "_meta": {
+    "version": "1.1",
+    "description": "Shop inventory for Chronicles of the Verdant Crossroads. Edit values freely — never change the keys, the 'effect' type, or reorder entries, as positions map to translation strings in the language JSONs (shop.items array).",
+    "fields": {
+      "id":          "Internal identifier for the item (do not change)",
+      "nameEn":      "Reference name in English (informational only — displayed name comes from the language JSON)",
+      "effect":      "What the item does. One of: 'addPotion', 'permAtk', 'permDef', 'permMaxHp'. Do not change.",
+      "effectValue": "Numeric value applied by the effect. Required for all effects.",
+      "costs":       "{ easy, balanced, hard } — gold cost per difficulty. Raise or lower freely.",
+      "notes":       "Designer notes — not read by the game"
+    },
+    "effectTypes": {
+      "addPotion":  "Adds one potion to the player's inventory. Used in combat with the Potion button. Heals potionHeal HP (defined in CONFIGS inside index.html: 15 on Easy, 18 on Normal/Hard). effectValue is ignored.",
+      "permAtk":    "Permanently increases the player's ATK by effectValue.",
+      "permDef":    "Permanently increases the player's DEF by effectValue.",
+      "permMaxHp":  "Permanently increases the player's maximum HP by effectValue, and heals the same amount immediately."
+    }
+  },
+
+  "items": [
+    {
+      "id":          "potion",
+      "nameEn":      "Health Potion",
+      "effect":      "addPotion",
+      "effectValue": null,
+      "costs":       { "easy": 8, "balanced": 10, "hard": 10 },
+      "notes":       "Consumable. Each purchase adds one potion to the stack. The heal amount is set by CONFIGS.potionHeal in index.html (15 easy / 18 balanced+hard)."
+    },
+    {
+      "id":          "iron_sword",
+      "nameEn":      "Iron Sword",
+      "effect":      "permAtk",
+      "effectValue": 2,
+      "costs":       { "easy": 15, "balanced": 18, "hard": 18 },
+      "notes":       "Permanent +2 ATK. Good early purchase."
+    },
+    {
+      "id":          "tower_shield",
+      "nameEn":      "Tower Shield",
+      "effect":      "permDef",
+      "effectValue": 2,
+      "costs":       { "easy": 12, "balanced": 16, "hard": 16 },
+      "notes":       "Permanent +2 DEF. Cheaper than the sword — DEF reduces all incoming damage."
+    },
+    {
+      "id":          "vitality_tome",
+      "nameEn":      "Vitality Tome",
+      "effect":      "permMaxHp",
+      "effectValue": 10,
+      "costs":       { "easy": 20, "balanced": 25, "hard": 25 },
+      "notes":       "Permanent +10 MaxHP, heals 10 HP immediately. Unique niche: raises the HP ceiling rather than restoring it. Resting restores HP; this increases how much HP you can have. Good mid-game purchase."
+    },
+    {
+      "id":          "war_tome",
+      "nameEn":      "War Tome",
+      "effect":      "permAtk",
+      "effectValue": 3,
+      "costs":       { "easy": 22, "balanced": 28, "hard": 28 },
+      "notes":       "Permanent +3 ATK. Costs roughly 55% more than the Iron Sword for 50% more ATK — a fair late-game upgrade, not a trap."
+    }
+  ]
+}

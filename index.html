@@ -796,6 +796,7 @@ body::before {
 const LOCALES = {};
 const LANGS = ['en', 'es', 'ca'];
 let ENEMY_DATA = {};
+let SHOP_DATA  = { items: [] };
 
 async function loadLocales() {
   await Promise.all([
@@ -806,7 +807,10 @@ async function loadLocales() {
     ),
     fetch('enemies.json')
       .then(r => r.json())
-      .then(data => { ENEMY_DATA = data; })
+      .then(data => { ENEMY_DATA = data; }),
+    fetch('shop.json')
+      .then(r => r.json())
+      .then(data => { SHOP_DATA = data; })
   ]);
   validateLocales();
   setLang('en');
@@ -893,14 +897,19 @@ const ABILITIES = [
     use(e){ const d=Math.round(S.atk*2.8+rnd(10)); e.hp-=d; print(i18n(t().abilities.meteor.log,{dmg:d}),"al"); } }
 ];
 
-const SHOP_BASE = [
-  { fn(){ S.inventory.push("potion"); } },
-  { fn(){ S.atk+=2; } },
-  { fn(){ S.def+=2; } },
-  { fn(){ S.hp=S.maxHp; } },
-  { fn(){ S.atk+=3; } }
-];
-const SHOP_COSTS = { easy:[8,15,12,25,28], balanced:[10,18,16,30,35], hard:[10,18,16,30,35] };
+// ─── SHOP DATA (loaded from shop.json) ───
+const EFFECT_FNS = {
+  addPotion:  ()  => { S.inventory.push("potion"); },
+  permAtk:    (v) => { S.atk += v; },
+  permDef:    (v) => { S.def += v; },
+  permMaxHp:  (v) => { S.maxHp += v; S.hp = Math.min(S.maxHp, S.hp + v); }
+};
+function applyShopItem(item) {
+  const fn = EFFECT_FNS[item.effect];
+  if (fn) fn(item.effectValue);
+}
+function getShopItems() { return SHOP_DATA.items || []; }
+function getShopCost(item) { return (item.costs && item.costs[DIFF]) || 0; }
 
 // ─── HELPERS ───
 function getEnemies() { return ENEMY_DATA[DIFF==='balanced'?'balanced':DIFF] || {}; }
@@ -1177,13 +1186,12 @@ function usePotion() {
 function renderShop() {
   document.getElementById("abilities-row").style.display="none";
   const act=document.getElementById("actions"); act.innerHTML="";
-  const costs=SHOP_COSTS[DIFF];
-  SHOP_BASE.forEach((item,i)=>{
-    const cost=costs[i];
+  getShopItems().forEach((item,i)=>{
+    const cost=getShopCost(item);
     const itemName=t().shop.items[i];
     const b=mkBtn(itemName+" ("+cost+"g)",()=>{
       if(S.gold<cost){ print(t().combat.notEnoughGold,"dmg"); return; }
-      S.gold-=cost; item.fn();
+      S.gold-=cost; applyShopItem(item);
       print(i18n(t().combat.boughtMsg,{item:itemName}),"ok");
       updateStats(); renderShop();
     },"heal");
