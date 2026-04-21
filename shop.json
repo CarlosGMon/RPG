@@ -47,9 +47,9 @@
       "id":          "vitality_tome",
       "nameEn":      "Vitality Tome",
       "effect":      "permMaxHp",
-      "effectValue": 10,
+      "effectValue": 5,
       "costs":       { "easy": 20, "balanced": 25, "hard": 25 },
-      "notes":       "Permanent +10 MaxHP, heals 10 HP immediately. Unique niche: raises the HP ceiling rather than restoring it. Resting restores HP; this increases how much HP you can have. Good mid-game purchase."
+      "notes":       "Permanent +5 MaxHP, heals 5 HP immediately. Unique niche: raises the HP ceiling rather than restoring it. Resting restores HP; this increases how much HP you can have. Good mid-game purchase."
     },
     {
       "id":          "war_tome",
