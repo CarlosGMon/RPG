@@ -8,7 +8,7 @@ A browser-based RPG adventure built entirely with vanilla HTML, CSS, and JavaScr
 
 ## Play it
 
-**[→ Play on GitHub Pages](https://your-username.github.io/verdant-crossroads/)**
+**[→ Play on GitHub Pages](https://litools-lab.github.io/verdant-crossroads/)**
 
 ---
 
