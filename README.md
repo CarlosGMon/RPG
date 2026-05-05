@@ -1,4 +1,4 @@
-# Chronicles of the Verdant Crossroads
+# <img src="favicon.png" width="48" height="48" align="absmiddle" alt=""> Chronicles of the Verdant Crossroads
 
 > *Choose your fate, hero. The world awaits.*
 
